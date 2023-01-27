@@ -1,10 +1,14 @@
 import express from 'express';
-import { initMongoDBConnection } from './api/config/moongose';
+import { initMongoDBConnection } from './config/moongose';
 import dotenv from 'dotenv';
+import swaggerUi from 'swagger-ui-express';
+import { specs } from './config/swagger';
 dotenv.config();
 
 const app = express();
 const port = process.env.PORT;
+
+app.use('/swagger', swaggerUi.serve, swaggerUi.setup(specs));
 
 (async () => {
   try {

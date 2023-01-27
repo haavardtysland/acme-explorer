@@ -1,5 +1,4 @@
 import { Stage } from './Stage';
-import { Ticker } from './Ticker';
 import { TripStatus } from './TripStatus';
 
 export type Trip = {
