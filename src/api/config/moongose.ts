@@ -8,6 +8,8 @@ const mongoDBOptions = {
   useUnifiedTopology: true,
 };
 
+mongoose.set('strictQuery', false);
+
 export const initMongoDBConnection = async () => {
   const mongoDBURI: string | undefined = process.env.CONNECTIONSTRING;
   if (!mongoDBURI) {
