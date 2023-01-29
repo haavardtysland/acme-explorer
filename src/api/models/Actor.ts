@@ -11,4 +11,5 @@ export type Actor = {
   phone?: string;
   adress?: string;
   role: Role;
+  password: string;
 };

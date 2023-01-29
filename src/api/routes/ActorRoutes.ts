@@ -1,6 +1,8 @@
-import { Express } from 'express';
-import { getActors } from '../controllers/ActorController';
+import { Application } from 'express';
+import { createActor, login, getActors } from '../controllers/ActorController';
 
-export function ActorRoutes(app: Express) {
-  app.route('/api/v0/Actor').get(getActors);
+export function ActorRoutes(app: Application) {
+  app.route('/api/v0/Actor/Login').post(login);
+
+  app.route('/api/v0/Actor').post(createActor).get(getActors);
 }
