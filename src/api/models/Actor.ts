@@ -5,6 +5,7 @@ enum Role {
 }
 
 export type Actor = {
+  _id: string;
   name: string;
   surename: string;
   email: string;
