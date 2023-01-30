@@ -1,18 +1,13 @@
 import { Actor } from '../models/Actor';
-import { Response, Request, response } from 'express';
+import { Response, Request } from 'express';
 import { ActorRepository } from '../repository/ActorRepository';
+import Ajv from 'ajv';
+import { actorValidator } from './validators/ActorValidator';
+
+const ajv = new Ajv();
 
 export const getActors = async (req: Request, res: Response) => {
-  const actors = [];
-  const actor: Actor = {
-    name: 'navn',
-    surename: 'navnesen',
-    email: 'voff',
-    role: 1,
-    password: 'pass',
-  };
-  actors.push(actor);
-  res.send(actors);
+  //jihaa
 };
 
 export const login = async (req: Request, res: Response) => {
@@ -20,9 +15,13 @@ export const login = async (req: Request, res: Response) => {
 };
 
 export const createActor = async (req: Request, res: Response) => {
-  console.log('prøver å poste');
   const actor: Actor = req.body;
-  console.log(actor);
+  const validate = ajv.compile<Actor>(actorValidator);
+
+  if (!validate(actor)) {
+    return res.status(422).send(validate.errors);
+  }
+
   await ActorRepository.createActor(actor);
-  res.send();
+  res.send(actor);
 };
