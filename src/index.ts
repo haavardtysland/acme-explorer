@@ -4,18 +4,19 @@ import dotenv from 'dotenv';
 import { ActorRoutes } from './api/routes/ActorRoutes';
 import bodyParser from 'body-parser';
 import { TripRoutes } from './api/routes/TripRoutes';
+import { AuthRoutes } from './api/routes/AuthRoutes';
+import cookieParser from 'cookie-parser';
 dotenv.config();
 
 const app: Application = express();
 const port = process.env.PORT;
-app.use(bodyParser.json());
 
+app.use(bodyParser.json());
+app.use(cookieParser());
+
+AuthRoutes(app);
 ActorRoutes(app);
 TripRoutes(app);
-
-app.get('/swagger-test', (req, res) => {
-  res.send('jaha');
-});
 
 (async () => {
   try {

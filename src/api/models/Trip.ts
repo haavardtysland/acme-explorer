@@ -7,8 +7,8 @@ export type Trip = {
   title: string;
   description: string;
   totalPrice: number;
-  startDate: string;
-  endDate: string;
+  startDate: Date;
+  endDate: Date;
   status: TripStatus;
   stages: Stage[];
   pictures?: string[];

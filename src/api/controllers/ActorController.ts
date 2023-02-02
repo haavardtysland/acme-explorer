@@ -1,7 +1,7 @@
 import { Actor } from '../models/Actor';
 import { Response, Request } from 'express';
 import { ActorRepository } from '../repository/ActorRepository';
-import Validadtor from './validators/Validator';
+import Validator from './validators/Validator';
 import { actorValidator } from './validators/ActorValidator';
 
 export const getActor = async (req: Request, res: Response) => {
@@ -22,16 +22,14 @@ export const getActors = async (req: Request, res: Response) => {
 };
 
 export const upadateActor = async (req: Request, res: Response) => {
+  const actorId: string = req.params.actorId;
   const actor: Actor = req.body;
-  const validate = Validadtor.compile<Actor>(actorValidator);
+  const validate = Validator.compile<Actor>(actorValidator);
 
   if (!validate(actor)) {
     return res.status(422).send(validate.errors);
   }
-  if (!actor) {
-    return res.status(404).send('Actor not found');
-  }
-  await ActorRepository.upadateActor(actor._id);
+  await ActorRepository.updateActor(actorId, actor);
   res.send(actor);
 };
 
@@ -40,19 +38,15 @@ export const deleteActor = async (req: Request, res: Response) => {
   const isDeleted: boolean = await ActorRepository.deleteActor(actorId);
 
   if (!isDeleted) {
-    res.status(404).send('Actor could not be deleted');
+    res.status(404).send(`Did not find actor with id: ${actorId}`);
     return;
   }
   res.send('Actor successfully deleted');
 };
 
-export const login = async (req: Request, res: Response) => {
-  //Login and return token!
-};
-
 export const createActor = async (req: Request, res: Response) => {
   const actor: Actor = req.body;
-  const validate = Validadtor.compile<Actor>(actorValidator);
+  const validate = Validator.compile<Actor>(actorValidator);
 
   if (!validate(actor)) {
     return res.status(422).send(validate.errors);
