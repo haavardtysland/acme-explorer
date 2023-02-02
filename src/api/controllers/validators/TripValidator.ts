@@ -45,8 +45,8 @@ export const tripValidator: JSONSchemaType<Trip> = {
     title: { type: 'string' },
     description: { type: 'string' },
     totalPrice: { type: 'integer' },
-    startDate: { type: 'string' }, //finid way to do this with dates
-    endDate: { type: 'string' },
+    startDate: { type: 'string', format: 'date' }, //finid way to do this with dates
+    endDate: { type: 'string', format: 'date' },
     isPublished: { type: 'boolean' },
     status: tripStatusValidator,
     stages: { type: 'array', items: stageValidator },
@@ -57,7 +57,6 @@ export const tripValidator: JSONSchemaType<Trip> = {
     'ticker',
     'title',
     'description',
-    'totalPrice',
     'startDate',
     'endDate',
     'isPublished',

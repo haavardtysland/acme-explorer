@@ -1,8 +1,9 @@
 import { Trip } from '../models/Trip';
 import { TripModel } from './schemes/TripScheme';
 
-const createTrip = async (trip: Trip): Promise<void> => {
-  await TripModel.create(trip);
+const createTrip = async (trip: Trip): Promise<Trip | null> => {
+  const res = await TripModel.create(trip);
+  return res;
 };
 
 const getTrip = async (tripId: string): Promise<Trip | null> => {

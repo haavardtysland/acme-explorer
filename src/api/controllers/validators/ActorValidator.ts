@@ -16,6 +16,6 @@ export const actorValidator: JSONSchemaType<Actor> = {
     },
     password: { type: 'string' },
   },
-  required: ['name', 'surname', 'email', 'role', 'password'],
+  required: ['name', 'surname', 'email', 'password'],
   additionalProperties: false,
 };

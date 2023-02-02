@@ -17,5 +17,3 @@ function getDate() {
 
   return `${yy}${mm}${dd}-${randomChars}`;
 }
-
-console.log(getDate());

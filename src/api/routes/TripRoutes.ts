@@ -3,16 +3,21 @@ import {
   createTrip,
   getTrips,
   getTrip,
-  upadateTrip,
+  updateTrip,
   deleteTrip,
 } from '../controllers/TripController';
+import { isAuthorized } from '../middlewares/AuthMiddleware';
+import { Role } from '../models/Actor';
 
 export function TripRoutes(app: Application) {
-  app.route('/api/v0/Trips').post(createTrip).get(getTrips);
+  app
+    .route('/api/v0/Trips')
+    .post(isAuthorized([Role.Manager]), createTrip)
+    .get(getTrips);
 
   app
-    .route('/api/v0/Trip/:tripId')
+    .route('/api/v0/Trips/:tripId')
     .get(getTrip)
-    .put(upadateTrip)
-    .delete(deleteTrip);
+    .put(isAuthorized([Role.Manager]), updateTrip)
+    .delete(isAuthorized([Role.Manager]), deleteTrip);
 }

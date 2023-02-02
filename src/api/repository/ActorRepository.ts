@@ -6,9 +6,10 @@ import { Types } from 'mongoose';
 import dotenv from 'dotenv';
 dotenv.config();
 
-const createActor = async (actor: Actor): Promise<void> => {
+const createActor = async (actor: Actor): Promise<Actor | null> => {
   actor.password = await hash(actor.password, 8);
-  await ActorModel.create(actor);
+  const res: Actor = await ActorModel.create(actor);
+  return res;
 };
 
 const getActor = async (actorId: string): Promise<Actor | null> => {
@@ -40,7 +41,7 @@ const deleteActor = async (actorId: string): Promise<boolean> => {
   if (!Types.ObjectId.isValid(actorId)) {
     return false;
   }
-  
+
   const res = await ActorModel.deleteOne({ _id: actorId });
   return res.deletedCount > 0;
 };

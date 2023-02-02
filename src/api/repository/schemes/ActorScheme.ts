@@ -3,7 +3,7 @@ import { Actor } from '../../models/Actor';
 
 const ActorSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  surename: { type: String, required: true },
+  surname: { type: String, required: true },
   email: { type: String, required: true },
   role: {
     type: String,
