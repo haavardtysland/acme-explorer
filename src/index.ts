@@ -3,6 +3,7 @@ import { initMongoDBConnection } from './api/config/moongose';
 import dotenv from 'dotenv';
 import { ActorRoutes } from './api/routes/ActorRoutes';
 import bodyParser from 'body-parser';
+import { TripRoutes } from './api/routes/TripRoutes';
 import { AuthRoutes } from './api/routes/AuthRoutes';
 import cookieParser from 'cookie-parser';
 dotenv.config();
@@ -15,6 +16,7 @@ app.use(cookieParser());
 
 AuthRoutes(app);
 ActorRoutes(app);
+TripRoutes(app);
 
 (async () => {
   try {

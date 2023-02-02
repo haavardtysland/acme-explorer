@@ -1,6 +1,6 @@
-enum Status {
-  Active,
-  Cancelled,
+export enum Status {
+  Active = 'ACTIVE',
+  Cancelled = 'CANCELLED',
 }
 
 export type TripStatus = {
