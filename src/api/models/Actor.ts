@@ -1,16 +1,16 @@
-enum Role {
-  Administrator,
-  Manager,
-  Explorer,
+export enum Role {
+  Administrator = 'ADMINISTRATOR',
+  Manager = 'MANAGER',
+  Explorer = 'EXPLORER',
 }
 
 export type Actor = {
   _id: string;
   name: string;
-  surename: string;
+  surname: string;
   email: string;
   phone?: string;
-  adress?: string;
+  address?: string;
   role: Role;
   password: string;
 };

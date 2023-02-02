@@ -1,17 +1,16 @@
 import { Application } from 'express';
 import {
   createActor,
-  login,
   getActors,
   getActor,
   upadateActor,
   deleteActor,
 } from '../controllers/ActorController';
+import { isAuthorized } from '../middlewares/AuthMiddleware';
+import { Role } from '../models/Actor';
 
 export function ActorRoutes(app: Application) {
-  app.route('/api/v0/Actor/Login').post(login);
-
-  app.route('/api/v0/Actors').post(createActor).get(getActors);
+  app.route('/api/v0/Actor').post(createActor).get(getActors);
 
   app
     .route('/api/v0/Actor/:actorId')
