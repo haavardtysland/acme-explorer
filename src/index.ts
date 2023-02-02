@@ -1,10 +1,14 @@
-import express, { Application } from 'express';
-import { initMongoDBConnection } from './api/config/moongose';
-import dotenv from 'dotenv';
-import { ActorRoutes } from './api/routes/ActorRoutes';
 import bodyParser from 'body-parser';
-import { AuthRoutes } from './api/routes/AuthRoutes';
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import express, { Application } from 'express';
+
+import swaggerDocs from '../swagger';
+import { initMongoDBConnection } from './api/config/moongose';
+import { ActorRoutes } from './api/routes/ActorRoutes';
+import { AuthRoutes } from './api/routes/AuthRoutes';
+
 dotenv.config();
 
 const app: Application = express();
@@ -12,6 +16,11 @@ const port = process.env.PORT;
 
 app.use(bodyParser.json());
 app.use(cookieParser());
+app.use(
+  cors({
+    origin: '*',
+  })
+);
 
 AuthRoutes(app);
 ActorRoutes(app);
@@ -21,6 +30,7 @@ ActorRoutes(app);
     await initMongoDBConnection();
     app.listen(port, () => {
       console.log(`Server started on port ${port}`);
+      swaggerDocs(app);
     });
   } catch (error) {
     console.log(error.message);
