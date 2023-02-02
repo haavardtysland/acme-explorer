@@ -4,8 +4,10 @@ import {
   deleteActor,
   getActor,
   getActors,
-  upadateActor,
+  updateActor,
 } from '../controllers/ActorController';
+import { isAuthorized, verifyIdentity } from '../middlewares/AuthMiddleware';
+import { Role } from '../models/Actor';
 
 export function ActorRoutes(app: Application) {
   /**
@@ -70,8 +72,13 @@ export function ActorRoutes(app: Application) {
   app.route('/api/v0/Actor').post(createActor);
 
   app
-    .route('/api/v0/Actor/:actorId')
-    .get(getActor)
-    .put(upadateActor)
-    .delete(deleteActor);
+    .route('/api/v0/Actors')
+    .post(createActor)
+    .get(isAuthorized([Role.Administrator]), getActors);
+
+  app
+    .route('/api/v0/Actors/:actorId')
+    .get(isAuthorized([Role.Administrator]), getActor)
+    .put(verifyIdentity, updateActor)
+    .delete(verifyIdentity, deleteActor);
 }
