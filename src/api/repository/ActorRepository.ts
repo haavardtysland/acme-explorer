@@ -1,11 +1,20 @@
 import { Actor } from '../models/Actor';
+import { IActorRepository } from './interfaces/IActorRepository';
 import { ActorModel } from './schemes/ActorScheme';
+import { hash } from 'bcryptjs';
+import { Types } from 'mongoose';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const createActor = async (actor: Actor): Promise<void> => {
+  actor.password = await hash(actor.password, 8);
   await ActorModel.create(actor);
 };
 
 const getActor = async (actorId: string): Promise<Actor | null> => {
+  if (!Types.ObjectId.isValid(actorId)) {
+    return null;
+  }
   return await ActorModel.findById(actorId);
 };
 
@@ -13,24 +22,38 @@ const getActors = async (): Promise<Actor[]> => {
   return await ActorModel.find();
 };
 
-const upadateActor = async (actorId: string): Promise<boolean> => {
-  const res = await ActorModel.findOneAndUpdate({ actorId });
-  //retruns boolean for if it is successfull or not
-  return res !== null;
+const updateActor = async (actorId: string, actor: Actor): Promise<boolean> => {
+  if (!Types.ObjectId.isValid(actorId)) {
+    return false;
+  }
+
+  const doc = await ActorModel.findOne({ _id: actorId });
+  if (!doc) {
+    return false;
+  }
+  doc.overwrite(actor);
+  await doc.save();
+  return true;
 };
 
 const deleteActor = async (actorId: string): Promise<boolean> => {
-  console.log(actorId);
+  if (!Types.ObjectId.isValid(actorId)) {
+    return false;
+  }
+  
   const res = await ActorModel.deleteOne({ _id: actorId });
-  console.log(res);
-  //retruns boolean for if it is successfull or not
   return res.deletedCount > 0;
 };
 
-export const ActorRepository = {
+const getUserByEmail = async (email: string): Promise<Actor | null> => {
+  return await ActorModel.findOne({ email: email });
+};
+
+export const ActorRepository: IActorRepository = {
   createActor,
   getActor,
   deleteActor,
   getActors,
-  upadateActor,
+  updateActor,
+  getUserByEmail,
 };

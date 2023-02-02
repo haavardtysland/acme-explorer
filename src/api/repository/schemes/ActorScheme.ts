@@ -5,10 +5,14 @@ const ActorSchema = new mongoose.Schema({
   name: { type: String, required: true },
   surename: { type: String, required: true },
   email: { type: String, required: true },
-  role: { type: Number, required: true },
+  role: {
+    type: String,
+    required: true,
+    enum: ['ADMINISTRATOR', 'MANAGER', 'EXPLORER'],
+  },
   password: { type: String, required: true },
   phone: { type: String, required: false },
-  adress: { type: String, required: false },
+  address: { type: String, required: false },
 });
 
 export const ActorModel = mongoose.model<Actor>(
