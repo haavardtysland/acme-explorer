@@ -48,12 +48,12 @@ export function ActorRoutes(app: Application) {
    *            type: object
    *            required:
    *              - name
-   *              - surename
+   *              - surname
    *            properties:
    *              name:
    *                type: string
    *                default: Ola
-   *              surename:
+   *              surname:
    *                type: string
    *                default: Nordmann
    *              email:
@@ -65,9 +65,6 @@ export function ActorRoutes(app: Application) {
    *              role:
    *                 type: string
    *                 default: EXPLORER
-   *     responses:
-   *       201:
-   *         description: Created
    */
   app.route('/api/v0/Actor').post(createActor);
 
