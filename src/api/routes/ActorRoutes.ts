@@ -1,3 +1,4 @@
+import { createManager } from './../controllers/ActorController';
 import { Application } from 'express';
 import {
   createActor,
@@ -67,6 +68,8 @@ export function ActorRoutes(app: Application) {
    *
    */
   app.route('/api/v0/Actor').post(createActor);
+
+  app.route('/api/v0/Manager').post(isAuthorized([Role.Administrator]), createManager);
 
   app
     .route('/api/v0/Actors')
