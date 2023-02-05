@@ -31,12 +31,4 @@ export const getApplicationsByTrip = async (req: Request, res: Response) => {
   res.send(applications);
 };
 
-export const getApplicationsByActor = async (req: Request, res: Response) => {
-  const actorId = req.params.actorId;
-  const applications: Application[] | null =
-    await ApplicationRepository.getApplicationsByActor(actorId);
-  if (!applications) {
-    res.status(404);
-  }
-  res.send(applications);
-};
+

@@ -44,6 +44,7 @@ export const tripValidator: JSONSchemaType<Trip> = {
   type: 'object',
   properties: {
     _id: { type: 'string' },
+    managerId: { type: 'string' },
     ticker: { type: 'string' },
     title: { type: 'string' },
     description: { type: 'string' },
@@ -60,6 +61,7 @@ export const tripValidator: JSONSchemaType<Trip> = {
   },
   required: [
     'ticker',
+    "managerId",
     'title',
     'description',
     'startDate',

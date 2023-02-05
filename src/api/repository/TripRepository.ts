@@ -1,3 +1,4 @@
+import { Types } from 'mongoose';
 import { Trip } from '../models/Trip';
 import { TripModel } from './schemes/TripScheme';
 
@@ -22,11 +23,31 @@ const upadateTrip = async (tripId: string): Promise<boolean> => {
 };
 
 const deleteTrip = async (tripId: string): Promise<boolean> => {
-  console.log(tripId);
   const res = await TripModel.deleteOne({ _id: tripId });
-  console.log(res);
   //retruns boolean for if it is successfull or not
   return res.deletedCount > 0;
+};
+
+const getTripsByActor = async (actorId: string): Promise<Trip[] | null> => {
+  if (!Types.ObjectId.isValid(actorId)) {
+    return null;
+  }
+
+  console.log(actorId);
+
+  const applicationSearch = [
+    {
+      $unwind: '$applications',
+    },
+    {
+      $match: {
+        'applications.actorId': new Types.ObjectId(actorId),
+      },
+    },
+  ];
+  const trips = await TripModel.find(applicationSearch);
+
+  return trips;
 };
 
 export const TripRepository = {
@@ -35,4 +56,5 @@ export const TripRepository = {
   deleteTrip,
   getTrips,
   upadateTrip,
+  getTripsByActor,
 };

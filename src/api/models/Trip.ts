@@ -5,6 +5,7 @@ import { TripStatus } from './TripStatus';
 
 export type Trip = {
   _id: string;
+  managerId: string;
   ticker: string;
   title: string;
   description: string;

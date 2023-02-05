@@ -71,3 +71,12 @@ export const createTrip = async (req: Request, res: Response) => {
 const calculateTotalPrice = (stages: Stage[]): number => {
   return stages.reduce((sum: number, stage: Stage) => sum + stage.price, 0);
 };
+
+export const getTripByActor = async (req: Request, res: Response) => {
+  const actorId = req.params.actorId;
+  const trips: Trip[] | null = await TripRepository.getTripsByActor(actorId);
+  if (!trips) {
+    res.status(404);
+  }
+  res.send(trips);
+};

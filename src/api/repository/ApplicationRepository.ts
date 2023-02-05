@@ -1,5 +1,5 @@
 import { application } from 'express';
-import { Types } from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 import { Application } from '../models/Application';
 import { Trip } from '../models/Trip';
 import { TripModel } from './schemes/TripScheme';
@@ -20,7 +20,7 @@ const createApplication = async (
     return null;
   }
 
-  await trip?.updateOne(update);
+  await trip.updateOne(update);
   return application;
 };
 
@@ -38,25 +38,7 @@ const getApplicationsByTrip = async (
   return trip.applications;
 };
 
-const getApplicationsByActor = async (
-  actorId: string
-): Promise<Application[] | null> => {
-  if (!Types.ObjectId.isValid(actorId)) {
-    return null;
-  }
-  const trips = await TripModel.find();
-  let actorApplications: Application[] = [];
-  trips.forEach((trip) => {
-    actorApplications = actorApplications.concat(
-      trip.applications.filter(
-        (application) => application.actorId.toString() === actorId.toString()
-      )
-    );
-  });
-  console.log(trips[0].applications[0]);
-  console.log(actorApplications);
-  return actorApplications;
-};
+
 /* 
 const getApplication = async (
   applicationId: string
@@ -85,7 +67,6 @@ const deleteApplication = async (applicationId: string): Promise<boolean> => {
 export const ApplicationRepository = {
   createApplication,
   getApplicationsByTrip,
-  getApplicationsByActor,
   /*   getApplication,
   deleteApplication,
   getApplications,

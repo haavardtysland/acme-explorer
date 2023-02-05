@@ -1,7 +1,6 @@
 import { Application } from 'express';
 import {
   createApplication,
-  getApplicationsByActor,
   getApplicationsByTrip,
 } from '../controllers/ApplicationController';
 import { isAuthorized } from '../middlewares/AuthMiddleware';
@@ -12,15 +11,6 @@ export function ApplicationRoutes(app: Application) {
 
   app
     .route('/api/v0/Trips/Applications')
-    .post(isAuthorized([Role.Manager]), createApplication);
-  app.route('/api/v0/Actors/:actorId/Applications').get(getApplicationsByActor);
+    .post(isAuthorized([Role.Manager]), createApplication);  
 }
-/*     .get(getApplication);
- */
-/* app
-    .route('/api/v0/Trips/:tripId')
-    .get(getAppli)
-    .put(isAuthorized([Role.Manager]), updateTrip)
-    .delete(isAuthorized([Role.Manager]), deleteTrip);
-}
- */
+

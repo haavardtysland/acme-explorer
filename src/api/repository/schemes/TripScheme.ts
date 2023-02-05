@@ -3,6 +3,7 @@ import { Trip } from '../../models/Trip';
 
 const TripSchema = new mongoose.Schema({
   ticker: { type: String, required: true },
+  managerId: {type: String, required: true},
   title: { type: String, required: true },
   description: { type: String, required: true },
   totalPrice: { type: Number, required: true },
