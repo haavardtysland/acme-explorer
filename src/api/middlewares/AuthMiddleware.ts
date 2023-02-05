@@ -22,6 +22,7 @@ export const isAuthorized = (permissions?: Role[]) => {
     if (!permissions.includes(payload.role)) {
       return res.status(403).send(`User needs role: ${permissions}`);
     }
+    res.locals.actorId = payload._id;
     next();
   };
 };

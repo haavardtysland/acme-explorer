@@ -1,8 +1,10 @@
+import { Application } from './Application';
 import { Stage } from './Stage';
 import { TripStatus } from './TripStatus';
 
 export type Trip = {
   _id: string;
+  managerId: string;
   ticker: string;
   title: string;
   description: string;
@@ -14,4 +16,5 @@ export type Trip = {
   pictures?: string[];
   requirements: string[];
   isPublished: boolean;
+  applications: Application[];
 };

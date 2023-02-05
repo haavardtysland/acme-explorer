@@ -1,9 +1,9 @@
-enum Status {
-  Accepted,
-  Due,
-  Pending,
-  Rejected,
-  Cancelled,
+export enum Status {
+  Accepted = 'ACCEPTED',
+  Due = 'DUE',
+  Pending = 'PENDING',
+  Rejected = 'REJECTED',
+  Cancelled = 'CANCELLED',
 }
 
 export type ApplicationStatus = {

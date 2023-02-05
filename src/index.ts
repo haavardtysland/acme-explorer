@@ -4,11 +4,11 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import express, { Application } from 'express';
 import { TripRoutes } from './api/routes/TripRoutes';
-
 import swaggerDocs from '../swagger';
 import { initMongoDBConnection } from './api/config/moongose';
 import { ActorRoutes } from './api/routes/ActorRoutes';
 import { AuthRoutes } from './api/routes/AuthRoutes';
+import { ApplicationRoutes } from './api/routes/ApplicationRoutes';
 
 dotenv.config();
 
@@ -26,6 +26,7 @@ app.use(
 AuthRoutes(app);
 ActorRoutes(app);
 TripRoutes(app);
+ApplicationRoutes(app);
 
 (async () => {
   try {

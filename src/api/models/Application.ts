@@ -2,8 +2,10 @@ import { Actor } from './Actor';
 import { ApplicationStatus } from './ApplicationStatus';
 
 export type Application = {
-  dateCreated: Date;
+  _id: string; 
+  dateCreated: string | Date;
   status: ApplicationStatus;
   comments: string[];
-  actor: Actor;
+  actorId: string;
+  tripId: string;
 };

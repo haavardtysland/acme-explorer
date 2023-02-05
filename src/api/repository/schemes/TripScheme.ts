@@ -1,8 +1,9 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 import { Trip } from '../../models/Trip';
 
 const TripSchema = new mongoose.Schema({
   ticker: { type: String, required: true },
+  managerId: {type: String, required: true},
   title: { type: String, required: true },
   description: { type: String, required: true },
   totalPrice: { type: Number, required: true },
@@ -15,11 +16,25 @@ const TripSchema = new mongoose.Schema({
       price: { type: String, required: true },
     },
   ],
-  picture: { data: Buffer, type: String, required: false },
+  pictures: [
+    {
+      name: { type: String },
+      fileId: { type: mongoose.Schema.Types.ObjectId, ref: 'fs.files' },
+    },
+  ],
   requirements: { type: [] },
-  /*  {
-      requirement: { type: String },
-    }, */
+  applications: [
+    {
+      dateCreated: { type: Date, required: true },
+      status: {
+        status: { type: String, required: true },
+        description: { type: String, required: true },
+      },
+      comments: { type: [], required: false },
+      actorId: { type: Schema.Types.ObjectId, required: true },
+      tripId: { type: Schema.Types.ObjectId, required: true },
+    },
+  ],
   isPublished: { type: Boolean },
 });
 

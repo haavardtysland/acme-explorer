@@ -26,7 +26,7 @@ export const createAcesstoken = (actor: Actor): string => {
     { id: actor._id, role: actor.role },
     process.env.ACCESS_TOKEN_SECRET,
     {
-      expiresIn: '15m',
+      expiresIn: '60m',
     }
   );
 };
