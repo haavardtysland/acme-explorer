@@ -13,7 +13,7 @@ export function ApplicationRoutes(app: Application) {
   app
     .route('/api/v0/Trips/Applications')
     .post(isAuthorized([Role.Manager]), createApplication);
-  app.route('/api/v0/Actors/:actorId/Applications/').get(getApplicationsByActor);
+  app.route('/api/v0/Actors/:actorId/Applications').get(getApplicationsByActor);
 }
 /*     .get(getApplication);
  */
