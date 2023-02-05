@@ -1,8 +1,8 @@
+import { Request, Response } from 'express';
 import { Actor, Role } from '../models/Actor';
-import { Response, Request } from 'express';
 import { ActorRepository } from '../repository/ActorRepository';
-import Validator from './validators/Validator';
 import { actorValidator } from './validators/ActorValidator';
+import Validator from './validators/Validator';
 
 export const getActor = async (req: Request, res: Response) => {
   const actorId: string = req.params.actorId;
@@ -56,6 +56,22 @@ export const createActor = async (req: Request, res: Response) => {
   const createdActor: Actor | null = await ActorRepository.createActor(actor);
   if (!createActor) {
     res.send(500).send('Did not manage to create actor');
+  }
+  res.send(createdActor);
+};
+
+export const createManager = async (req: Request, res: Response) => {
+  const actor: Actor = req.body;
+  actor.role = Role.Manager;
+  const validate = Validator.compile<Actor>(actorValidator);
+
+  if (!validate(actor)) {
+    return res.status(422).send(validate.errors);
+  }
+
+  const createdActor: Actor | null = await ActorRepository.createActor(actor);
+  if (!createActor) {
+    res.send(500).send('Did not manage to create manager');
   }
   res.send(createdActor);
 };
