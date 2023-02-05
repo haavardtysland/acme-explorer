@@ -137,6 +137,17 @@ const getTripsByManager = async (managerId: string): Promise<Trip[] | null> => {
   return trips;
 };
 
+const getSearchedTrips = async (searchWord: string): Promise<Trip[] | null> => {
+  const response: Trip[] | null = await TripModel.find({
+    $or: [
+      { ticker: new RegExp(searchWord, 'i') },
+      { title: new RegExp(searchWord, 'i') },
+      { description: new RegExp(searchWord, 'i') },
+    ],
+  });
+  return response;
+};
+
 export const TripRepository = {
   createTrip,
   getTrip,
@@ -145,4 +156,5 @@ export const TripRepository = {
   upadateTrip,
   getTripsByActor,
   getTripsByManager,
+  getSearchedTrips,
 };

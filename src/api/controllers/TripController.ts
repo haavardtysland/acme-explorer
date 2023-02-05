@@ -102,3 +102,14 @@ export const getTripsByManager = async (req: Request, res: Response) => {
   }
   res.send(trips);
 };
+
+export const getSearchedTrips = async (req: Request, res: Response) => {
+  const searchWord = req.params.searchWord;
+  const trips: Trip[] | null = await TripRepository.getSearchedTrips(
+    searchWord
+  );
+  if (!trips) {
+    res.status(404).send(`No trips matched the searchword: ${searchWord}`);
+  }
+  res.status(200).send(trips);
+};
