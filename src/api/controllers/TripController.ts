@@ -5,6 +5,8 @@ import Validadtor from './validators/Validator';
 import { tripValidator } from './validators/TripValidator';
 import { Ticker } from '../models/Ticker';
 import { Stage } from '../models/Stage';
+import { Status } from '../models/TripStatus';
+import { ModifyTripResponse } from '../repository/models/TripModels';
 
 export const getTrip = async (req: Request, res: Response) => {
   const tripId: string = req.params.tripId;
@@ -25,35 +27,43 @@ export const getTrips = async (req: Request, res: Response) => {
 
 export const updateTrip = async (req: Request, res: Response) => {
   const trip: Trip = req.body;
+  const tripId: string = req.params.tripId;
+  const managerId = res.locals.actorId;
   const validate = Validadtor.compile<Trip>(tripValidator);
 
   if (!validate(trip)) {
     return res.status(422).send(validate.errors);
   }
 
-  if (!trip) {
-    return res.status(404).send('Trip not found');
-  }
+  const response: ModifyTripResponse = await TripRepository.upadateTrip(
+    tripId,
+    managerId,
+    trip
+  );
 
-  await TripRepository.upadateTrip(trip._id);
-  res.send(trip);
+  res.status(response.statusCode).send(response.message);
 };
 
 export const deleteTrip = async (req: Request, res: Response) => {
   const tripId: string = req.params.tripId;
-  const isDeleted: boolean = await TripRepository.deleteTrip(tripId);
-
-  if (!isDeleted) {
-    res.status(404).send('Trip could not be deleted');
-    return;
-  }
-  res.send('Trip successfully deleted');
+  const managerId = res.locals.actorId;
+  const response: ModifyTripResponse = await TripRepository.deleteTrip(
+    tripId,
+    managerId
+  );
+  res.status(response.statusCode).send(response.message);
 };
 
 export const createTrip = async (req: Request, res: Response) => {
   const trip: Trip = req.body;
   trip.ticker = Ticker.newTicker();
   trip.totalPrice = calculateTotalPrice(trip.stages);
+  trip.managerId = res.locals.actorId;
+  trip.isPublished = false;
+  trip.status = {
+    status: Status.Active,
+    description: 'Trip created',
+  };
 
   const validate = Validadtor.compile<Trip>(tripValidator);
 
@@ -65,6 +75,7 @@ export const createTrip = async (req: Request, res: Response) => {
   if (!createdTrip) {
     res.send(500).send('Did not manage to create Trip');
   }
+
   res.send(createdTrip);
 };
 
@@ -76,7 +87,18 @@ export const getTripByActor = async (req: Request, res: Response) => {
   const actorId = req.params.actorId;
   const trips: Trip[] | null = await TripRepository.getTripsByActor(actorId);
   if (!trips) {
-    res.status(404);
+    res.status(404).send(`Could not find actor with Id: ${actorId}`);
+  }
+  res.send(trips);
+};
+
+export const getTripsByManager = async (req: Request, res: Response) => {
+  const managerId = req.params.managerId;
+  const trips: Trip[] | null = await TripRepository.getTripsByManager(
+    managerId
+  );
+  if (!trips) {
+    res.status(404).send(`Could not find manager with Id: ${managerId}`);
   }
   res.send(trips);
 };

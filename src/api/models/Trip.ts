@@ -1,5 +1,4 @@
 import { Application } from './Application';
-import { Picture } from './Picture';
 import { Stage } from './Stage';
 import { TripStatus } from './TripStatus';
 

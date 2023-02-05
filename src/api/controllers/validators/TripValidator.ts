@@ -55,13 +55,12 @@ export const tripValidator: JSONSchemaType<Trip> = {
     status: tripStatusValidator,
     stages: { type: 'array', items: stageValidator },
     requirements: { type: 'array', items: { type: 'string' } },
-    //pictures: { type: 'array', items: pictureValidator, nullable: true }, //TODO find a way to save this.
     pictures: { type: 'array', items: { type: 'string' }, nullable: true },
     applications: { type: 'array', items: applicationValidator },
   },
   required: [
     'ticker',
-    "managerId",
+    'managerId',
     'title',
     'description',
     'startDate',

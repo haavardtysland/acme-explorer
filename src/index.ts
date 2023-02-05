@@ -10,7 +10,6 @@ import { ActorRoutes } from './api/routes/ActorRoutes';
 import { AuthRoutes } from './api/routes/AuthRoutes';
 import { ApplicationRoutes } from './api/routes/ApplicationRoutes';
 
-
 dotenv.config();
 
 const app: Application = express();
