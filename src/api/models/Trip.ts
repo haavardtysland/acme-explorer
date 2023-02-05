@@ -1,3 +1,5 @@
+import { Application } from './Application';
+import { Picture } from './Picture';
 import { Stage } from './Stage';
 import { TripStatus } from './TripStatus';
 
@@ -14,4 +16,5 @@ export type Trip = {
   pictures?: string[];
   requirements: string[];
   isPublished: boolean;
+  applications: Application[];
 };

@@ -5,6 +5,7 @@ import { ActorRoutes } from './api/routes/ActorRoutes';
 import bodyParser from 'body-parser';
 import { TripRoutes } from './api/routes/TripRoutes';
 import { AuthRoutes } from './api/routes/AuthRoutes';
+import { ApplicationRoutes } from './api/routes/ApplicationRoutes';
 import cookieParser from 'cookie-parser';
 dotenv.config();
 
@@ -17,6 +18,7 @@ app.use(cookieParser());
 AuthRoutes(app);
 ActorRoutes(app);
 TripRoutes(app);
+ApplicationRoutes(app);
 
 (async () => {
   try {

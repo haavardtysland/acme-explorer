@@ -1,8 +1,10 @@
 import { JSONSchemaType } from 'ajv';
+import { Picture } from '../../models/Picture';
 import { Stage } from '../../models/Stage';
 import { Trip } from '../../models/Trip';
 import { TripStatus } from '../../models/TripStatus';
 import { Status } from '../../models/TripStatus';
+import { applicationValidator } from './ApplicationValidator';
 
 const tripStatusValidator: JSONSchemaType<TripStatus> = {
   type: 'object',
@@ -27,15 +29,16 @@ const stageValidator: JSONSchemaType<Stage> = {
   additionalProperties: false,
 };
 
-/* export const pictureValidator: JSONSchemaType<any> = {
-    type: 'object',
-    properties: {
-      data: { type: 'string' },
-      contentType: { type: 'string' },
-    },
-    required: ['data', 'contentType'],
-    additionalProperties: false,
-  }; */
+const pictureValidator: JSONSchemaType<Picture> = {
+  type: 'object',
+  properties: {
+    name: { type: 'string' },
+    fileId: { type: 'string' },
+  },
+
+  required: ['name', 'fileId'], //TODO check if it must be required
+  additionalProperties: false,
+};
 
 export const tripValidator: JSONSchemaType<Trip> = {
   type: 'object',
@@ -45,13 +48,15 @@ export const tripValidator: JSONSchemaType<Trip> = {
     title: { type: 'string' },
     description: { type: 'string' },
     totalPrice: { type: 'integer' },
-    startDate: { type: 'string', format: 'date' }, //finid way to do this with dates
+    startDate: { type: 'string', format: 'date' },
     endDate: { type: 'string', format: 'date' },
     isPublished: { type: 'boolean' },
     status: tripStatusValidator,
     stages: { type: 'array', items: stageValidator },
     requirements: { type: 'array', items: { type: 'string' } },
-    pictures: { type: 'array', items: { type: 'string' }, nullable: true }, //TODO find a way to safe this.
+    //pictures: { type: 'array', items: pictureValidator, nullable: true }, //TODO find a way to save this.
+    pictures: { type: 'array', items: { type: 'string' }, nullable: true },
+    applications: { type: 'array', items: applicationValidator },
   },
   required: [
     'ticker',
