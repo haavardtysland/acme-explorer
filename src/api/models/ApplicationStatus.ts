@@ -1,4 +1,4 @@
-export enum Status {
+export enum AStatus {
   Accepted = 'ACCEPTED',
   Due = 'DUE',
   Pending = 'PENDING',
@@ -7,6 +7,6 @@ export enum Status {
 }
 
 export type ApplicationStatus = {
-  status: Status;
+  status: AStatus;
   description: string;
 };

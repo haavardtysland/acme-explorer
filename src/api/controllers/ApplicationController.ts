@@ -1,17 +1,17 @@
+import { Request, Response } from 'express';
 import { Application } from '../models/Application';
-import { Response, Request } from 'express';
 
-import Validator from './validators/Validator';
-import { applicationValidator } from './validators/ApplicationValidator';
+import { AStatus } from '../models/ApplicationStatus';
 import { ApplicationRepository } from '../repository/ApplicationRepository';
-import { Status } from '../models/ApplicationStatus';
+import { applicationValidator } from './validators/ApplicationValidator';
+import Validator from './validators/Validator';
 
 export const createApplication = async (req: Request, res: Response) => {
   const application: Application = req.body;
   application.dateCreated = new Date().toISOString().substring(0, 10);
   application.status = {
     description: 'Waiting for payment',
-    status: Status.Pending,
+    status: AStatus.Pending,
   };
 
   const validate = Validator.compile<Application>(applicationValidator);

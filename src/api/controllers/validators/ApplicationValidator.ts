@@ -1,13 +1,19 @@
 import { JSONSchemaType } from 'ajv';
 import { Application } from '../../models/Application';
-import { ApplicationStatus, Status } from '../../models/ApplicationStatus';
+import { ApplicationStatus, AStatus } from '../../models/ApplicationStatus';
 
 const applicationStatusValidator: JSONSchemaType<ApplicationStatus> = {
   type: 'object',
   properties: {
     status: {
       type: ['string'],
-      enum: ['PENDING', 'REJECTED', 'DUE', 'ACCEPTED', 'CANCELLED'] as Status[],
+      enum: [
+        'PENDING',
+        'REJECTED',
+        'DUE',
+        'ACCEPTED',
+        'CANCELLED',
+      ] as AStatus[],
     },
     description: { type: 'string' },
   },

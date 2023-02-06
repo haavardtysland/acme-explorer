@@ -1,12 +1,12 @@
-import { Trip } from '../models/Trip';
-import { Response, Request } from 'express';
-import { TripRepository } from '../repository/TripRepository';
-import Validadtor from './validators/Validator';
-import { tripValidator } from './validators/TripValidator';
-import { Ticker } from '../models/Ticker';
+import { Request, Response } from 'express';
 import { Stage } from '../models/Stage';
-import { Status } from '../models/TripStatus';
+import { Ticker } from '../models/Ticker';
+import { Trip } from '../models/Trip';
+import { TStatus } from '../models/TripStatus';
 import { ModifyTripResponse } from '../repository/models/TripModels';
+import { TripRepository } from '../repository/TripRepository';
+import { tripValidator } from './validators/TripValidator';
+import Validadtor from './validators/Validator';
 
 export const getTrip = async (req: Request, res: Response) => {
   const tripId: string = req.params.tripId;
@@ -54,6 +54,16 @@ export const deleteTrip = async (req: Request, res: Response) => {
   res.status(response.statusCode).send(response.message);
 };
 
+export const cancelTrip = async (req: Request, res: Response) => {
+  const tripId: string = req.params.tripId;
+  const managerId: string = res.locals.actorId;
+  const response: ModifyTripResponse = await TripRepository.cancelTrip(
+    tripId,
+    managerId
+  );
+  res.status(response.statusCode).send(response.message);
+};
+
 export const createTrip = async (req: Request, res: Response) => {
   const trip: Trip = req.body;
   trip.ticker = Ticker.newTicker();
@@ -61,7 +71,7 @@ export const createTrip = async (req: Request, res: Response) => {
   trip.managerId = res.locals.actorId;
   trip.isPublished = false;
   trip.status = {
-    status: Status.Active,
+    status: TStatus.Active,
     description: 'Trip created',
   };
 

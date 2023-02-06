@@ -1,12 +1,13 @@
 import { Application } from 'express';
 import {
+  cancelTrip,
   createTrip,
-  getTrips,
-  getTrip,
-  updateTrip,
   deleteTrip,
+  getTrip,
   getTripByActor,
-  getTripsByManager
+  getTrips,
+  getTripsByManager,
+  updateTrip,
 } from '../controllers/TripController';
 import { isAuthorized } from '../middlewares/AuthMiddleware';
 import { Role } from '../models/Actor';
@@ -22,6 +23,28 @@ export function TripRoutes(app: Application) {
     .get(getTrip)
     .put(isAuthorized([Role.Manager]), updateTrip)
     .delete(isAuthorized([Role.Manager]), deleteTrip);
+
+  /**
+   * @swagger
+   * /api/v0/Trips/{tripId}/Status:
+   *   put:
+   *    summary: Cancel a trip that is already published.
+   *    description: Cancel a trip that has been published, but not started yet. Can only be cancelled if no applications have been accepted yet.
+   *    parameters:
+   *      - name: tripId
+   *        in: path
+   *        required: true
+   *        description: The id of the trip
+   *        schema:
+   *          type: string
+   *
+   *    responses:
+   *      default:
+   *        description: successful operation
+   */
+  app
+    .route('api/v0/Trips/:tripId/Status')
+    .put(isAuthorized([Role.Manager]), cancelTrip);
 
   app.route('/api/v0/Actors/:actorId/Trips').get(getTripByActor);
 

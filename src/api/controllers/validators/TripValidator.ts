@@ -2,14 +2,13 @@ import { JSONSchemaType } from 'ajv';
 import { Picture } from '../../models/Picture';
 import { Stage } from '../../models/Stage';
 import { Trip } from '../../models/Trip';
-import { TripStatus } from '../../models/TripStatus';
-import { Status } from '../../models/TripStatus';
+import { TripStatus, TStatus } from '../../models/TripStatus';
 import { applicationValidator } from './ApplicationValidator';
 
 const tripStatusValidator: JSONSchemaType<TripStatus> = {
   type: 'object',
   properties: {
-    status: { type: 'string', enum: ['ACTIVE', 'CANCELLED'] as Status[] },
+    status: { type: 'string', enum: ['ACTIVE', 'CANCELLED'] as TStatus[] },
     description: { type: 'string' },
   },
 

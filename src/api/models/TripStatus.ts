@@ -1,9 +1,9 @@
-export enum Status {
+export enum TStatus {
   Active = 'ACTIVE',
   Cancelled = 'CANCELLED',
 }
 
 export type TripStatus = {
-  status: Status;
+  status: TStatus;
   description: string;
 };

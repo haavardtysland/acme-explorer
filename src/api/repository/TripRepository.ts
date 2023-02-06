@@ -1,7 +1,42 @@
 import { Types } from 'mongoose';
 import { Trip } from '../models/Trip';
+import { AStatus } from './../models/ApplicationStatus';
+import { TStatus } from './../models/TripStatus';
 import { ModifyTripResponse } from './models/TripModels';
 import { TripModel } from './schemes/TripScheme';
+
+const cancelTrip = async (
+  tripId: string,
+  managerId: string
+): Promise<ModifyTripResponse> => {
+  const doc = await TripModel.findOne({ _id: tripId });
+
+  const response: ModifyTripResponse | null = canTripBeCancelled(
+    tripId,
+    managerId,
+    doc
+  );
+
+  if (response) {
+    return response;
+  }
+
+  if (!doc) {
+    return {
+      statusCode: 404,
+      message: `Could not find Trip with Id: ${tripId}`,
+      isModified: false,
+    };
+  }
+
+  doc.overwrite({ status: TStatus.Cancelled });
+  await doc.save();
+  return {
+    isModified: true,
+    statusCode: 200,
+    message: 'Trip is cancelled',
+  };
+};
 
 const createTrip = async (trip: Trip): Promise<Trip | null> => {
   const res = await TripModel.create(trip);
@@ -94,6 +129,57 @@ const getTripsByActor = async (actorId: string): Promise<Trip[] | null> => {
   return trips;
 };
 
+const canTripBeCancelled = (
+  tripId: string,
+  managerId: string,
+  trip: Trip | null
+): ModifyTripResponse | null => {
+  if (trip === null) {
+    return {
+      isModified: false,
+      message: `Trip with Id: ${tripId} does not exist`,
+      statusCode: 404,
+    };
+  }
+
+  if (trip.managerId !== managerId) {
+    return {
+      isModified: false,
+      message: 'You have to be the manager for this trip to modify it',
+      statusCode: 403,
+    };
+  }
+  const today: Date = new Date();
+
+  if (trip.startDate >= today) {
+    return {
+      isModified: false,
+      message: 'You cannot cancel the trip as it has already started',
+      statusCode: 403,
+    };
+  }
+
+  if (!trip.isPublished) {
+    return {
+      isModified: false,
+      message: 'You can only cancel the trip if it has been published',
+      statusCode: 403,
+    };
+  }
+
+  trip.applications.forEach((application) => {
+    if (application.status.status === AStatus.Accepted) {
+      return {
+        isModified: false,
+        message: 'You cannot cancel a trip which has any accepted applications',
+        statusCode: 403,
+      };
+    }
+  });
+
+  return null;
+};
+
 const isTripModifiable = (
   tripId: string,
   managerId: string,
@@ -138,6 +224,7 @@ const getTripsByManager = async (managerId: string): Promise<Trip[] | null> => {
 };
 
 export const TripRepository = {
+  cancelTrip,
   createTrip,
   getTrip,
   deleteTrip,
