@@ -1,3 +1,5 @@
+import { compare } from 'bcryptjs';
+import { Request, Response } from 'express';
 import {
   createAcesstoken,
   createRefreshToken,
@@ -6,12 +8,10 @@ import {
   RefreshTokenPayload,
   verifyAcessToken,
 } from '../auth/auth';
-import { Request, Response } from 'express';
-import Validator from './validators/Validator';
-import { loginValidator } from './validators/LoginValidator';
-import { ActorRepository } from '../repository/ActorRepository';
 import { Actor } from '../models/Actor';
-import { compare } from 'bcryptjs';
+import { ActorRepository } from '../repository/ActorRepository';
+import { loginValidator } from './validators/LoginValidator';
+import Validator from './validators/Validator';
 
 export const login = async (req: Request, res: Response) => {
   const loginRequest: LoginRequest = req.body;
@@ -25,7 +25,7 @@ export const login = async (req: Request, res: Response) => {
 
   if (!actor) {
     return res
-      .status(401)
+      .status(404)
       .send(`Could not find user with email: ${loginRequest.email}`);
   }
 

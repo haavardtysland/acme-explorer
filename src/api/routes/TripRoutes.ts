@@ -29,8 +29,10 @@ export function TripRoutes(app: Application) {
    * @swagger
    * /api/v0/Trips/{tripId}/Status:
    *   put:
+   *    security:
+   *      - bearerAuth: []
    *    summary: Cancel a trip that is already published.
-   *    description: Cancel a trip that has been published, but not started yet. Can only be cancelled if no applications have been accepted yet.
+   *    description: Cancel a trip that has been published, but not started yet. Can only be cancelled if no applications have been accepted yet and a manager token is presented.
    *    parameters:
    *      - name: tripId
    *        in: path
