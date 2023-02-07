@@ -3,13 +3,14 @@ import {
   cancelTrip,
   createTrip,
   deleteTrip,
+  getSearchedTrips,
   getTrip,
   getTripByActor,
   getTrips,
   getTripsByManager,
   updateTrip,
 } from '../controllers/TripController';
-import { isAuthorized } from '../middlewares/AuthMiddleware';
+import { isAuthorized, verifyIdentity } from '../middlewares/AuthMiddleware';
 import { Role } from '../models/Actor';
 
 export function TripRoutes(app: Application) {
@@ -47,6 +48,13 @@ export function TripRoutes(app: Application) {
     .put(isAuthorized([Role.Manager]), cancelTrip);
 
   app.route('/api/v0/Actors/:actorId/Trips').get(getTripByActor);
+  app
+    .route('/api/v0/Actors/:actorId/Trips')
+    .get(verifyIdentity, getTripByActor);
 
-  app.route('/api/v0/Managers/:managerId/Trips').get(getTripsByManager);
+  app
+    .route('/api/v0/Managers/:managerId/Trips')
+    .get(isAuthorized([Role.Manager]), getTripsByManager);
+
+  app.route('/api/v0/Trips/Search/:searchWord').get(getSearchedTrips);
 }

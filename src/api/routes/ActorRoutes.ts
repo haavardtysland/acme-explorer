@@ -50,6 +50,8 @@ export function ActorRoutes(app: Application) {
    *            required:
    *              - name
    *              - surname
+   *              - email
+   *              - password
    *            properties:
    *              name:
    *                type: string
@@ -63,9 +65,7 @@ export function ActorRoutes(app: Application) {
    *              password:
    *                 type: string
    *                 default: 12345678
-   *              role:
-   *                 type: string
-   *                 default: EXPLORER
+   *
    */
   app.route('/api/v0/Actor').post(createActor);
 
