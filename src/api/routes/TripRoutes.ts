@@ -41,7 +41,7 @@ export function TripRoutes(app: Application) {
    *
    *    responses:
    *      default:
-   *        description: successful operation
+   *        description: successfully cancelled trip
    */
   app
     .route('api/v0/Trips/:tripId/Status')
