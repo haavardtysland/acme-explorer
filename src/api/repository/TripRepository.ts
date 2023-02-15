@@ -2,14 +2,14 @@ import { Types } from 'mongoose';
 import { Trip } from '../models/Trip';
 import { AStatus } from './../models/ApplicationStatus';
 import { TStatus } from './../models/TripStatus';
-import { ModifyTripResponse } from './models/TripModels';
+import { ModifyTripResponse } from './dtos/TripModels';
 import { TripModel } from './schemes/TripScheme';
 
 const cancelTrip = async (
   tripId: string,
   managerId: string
 ): Promise<ModifyTripResponse> => {
-  const doc = await TripModel.findOne({ _id: tripId });
+  const doc = await TripModel.findById(tripId);
 
   const response: ModifyTripResponse | null = canTripBeCancelled(
     tripId,
@@ -29,7 +29,10 @@ const cancelTrip = async (
     };
   }
 
-  doc.overwrite({ status: TStatus.Cancelled });
+  doc.overwrite({
+    status: { status: TStatus.Cancelled, description: 'Trip is cancelled' },
+  });
+  
   await doc.save();
   return {
     isModified: true,

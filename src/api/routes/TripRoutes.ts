@@ -10,7 +10,7 @@ import {
   getTripsByManager,
   updateTrip,
 } from '../controllers/TripController';
-import { isAuthorized, verifyIdentity } from '../middlewares/AuthMiddleware';
+import { isAuthorized } from '../middlewares/AuthMiddleware';
 import { Role } from '../models/Actor';
 
 export function TripRoutes(app: Application) {

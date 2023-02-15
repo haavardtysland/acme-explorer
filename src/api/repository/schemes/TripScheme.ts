@@ -3,12 +3,16 @@ import { Trip } from '../../models/Trip';
 
 const TripSchema = new mongoose.Schema({
   ticker: { type: String, required: true },
-  managerId: {type: String, required: true},
+  managerId: { type: String, required: true },
   title: { type: String, required: true },
   description: { type: String, required: true },
   totalPrice: { type: Number, required: true },
   startDate: { type: Date, required: true },
   endDate: { type: Date, required: true },
+  status: {
+    status: { type: String, required: true, enum: ['ACTIVE, CANCELLED'] },
+    description: { type: String, required: true },
+  },
   stages: [
     {
       title: { type: String, required: true },
@@ -27,11 +31,15 @@ const TripSchema = new mongoose.Schema({
     {
       dateCreated: { type: Date, required: true },
       status: {
-        status: { type: String, required: true },
+        status: {
+          type: String,
+          required: true,
+          enum: ['ACCEPTED', 'DUE', 'PENDING', 'REJECTED', 'CANCELLED'],
+        },
         description: { type: String, required: true },
       },
       comments: { type: [], required: false },
-      actorId: { type: Schema.Types.ObjectId, required: true },
+      actorId: { type: Schema.Types.ObjectId, required: true, unique: true },
       tripId: { type: Schema.Types.ObjectId, required: true },
     },
   ],

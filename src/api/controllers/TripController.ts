@@ -4,7 +4,7 @@ import { Stage } from '../models/Stage';
 import { Ticker } from '../models/Ticker';
 import { Trip } from '../models/Trip';
 import { TStatus } from '../models/TripStatus';
-import { ModifyTripResponse } from '../repository/models/TripModels';
+import { ModifyTripResponse } from '../repository/dtos/TripModels';
 import { TripRepository } from '../repository/TripRepository';
 import { tripValidator } from './validators/TripValidator';
 import Validadtor from './validators/Validator';
