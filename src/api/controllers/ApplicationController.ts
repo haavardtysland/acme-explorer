@@ -1,7 +1,9 @@
 import { Request, Response } from 'express';
 import { Application } from '../models/Application';
 import { ApplicationStatus, AStatus } from '../models/ApplicationStatus';
+import { Trip } from '../models/Trip';
 import { ApplicationRepository } from '../repository/ApplicationRepository';
+import { TripRepository } from '../repository/TripRepository';
 import {
   applicationStatusValidator,
   applicationValidator,
@@ -20,6 +22,21 @@ export const createApplication = async (req: Request, res: Response) => {
 
   if (!validate(application)) {
     return res.status(422).send(validate.errors);
+  }
+
+  const trip: Trip | null = await TripRepository.getTrip(application.tripId);
+  if (!trip) {
+    return res
+      .send(404)
+      .send('The trip you are trying to apply to does not exist');
+  }
+
+  if (!trip.isPublished) {
+    return res.status(400).send('You cannot apply for a Trip that is not published');
+  }
+
+  if (application.dateCreated < trip.startDate) {
+    return res.status(400).send('You cannot apply for a Trip that already has started');
   }
 
   const createdApplication: Application | null =
@@ -43,7 +60,6 @@ export const getApplicationsByTrip = async (req: Request, res: Response) => {
 export const changeApplicationStatus = async (req: Request, res: Response) => {
   const applicationId: string = req.params.applicationId;
   const applicationStatus: ApplicationStatus = req.body;
-
 
   const validate = Validator.compile<ApplicationStatus>(
     applicationStatusValidator
