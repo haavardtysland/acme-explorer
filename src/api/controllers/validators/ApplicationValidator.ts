@@ -2,7 +2,7 @@ import { JSONSchemaType } from 'ajv';
 import { Application } from '../../models/Application';
 import { ApplicationStatus, AStatus } from '../../models/ApplicationStatus';
 
-const applicationStatusValidator: JSONSchemaType<ApplicationStatus> = {
+export const applicationStatusValidator: JSONSchemaType<ApplicationStatus> = {
   type: 'object',
   properties: {
     status: {

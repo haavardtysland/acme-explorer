@@ -1,7 +1,6 @@
-import { application } from 'express';
-import mongoose, { Types } from 'mongoose';
+import { Types } from 'mongoose';
 import { Application } from '../models/Application';
-import { Trip } from '../models/Trip';
+import { ApplicationStatus } from '../models/ApplicationStatus';
 import { TripModel } from './schemes/TripScheme';
 
 const createApplication = async (
@@ -38,7 +37,37 @@ const getApplicationsByTrip = async (
   return trip.applications;
 };
 
+const updateApplicationStatus = async (
+  applicationId: string,
+  applicationStatus: ApplicationStatus
+): Promise<ApplicationStatus | null> => {
+  if (!Types.ObjectId.isValid(applicationId)) {
+    return null;
+  }
+
+  const trip = await TripModel.findOneAndUpdate(
+    {
+      'applications._id': applicationId,
+    },
+    {
+      $set: {
+        'applications.$.status': {
+          status: applicationStatus.status,
+          description: applicationStatus.description,
+        },
+      },
+    }
+  );
+
+  if (!trip) {
+    return null;
+  }
+
+  return applicationStatus;
+};
+
 export const ApplicationRepository = {
   createApplication,
   getApplicationsByTrip,
+  updateApplicationStatus,
 };

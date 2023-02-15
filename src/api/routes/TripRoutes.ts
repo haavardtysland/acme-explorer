@@ -104,6 +104,8 @@ export function TripRoutes(app: Application) {
    *       400:
    *         description: Bad request
    *   post:
+   *    security:
+   *       - bearerAuth: []
    *    summary: Post new trip
    *    description: Post new trip to the array of trips
    *    requestBody:
@@ -197,7 +199,7 @@ export function TripRoutes(app: Application) {
    *   delete:
    *    security:
    *       - bearerAuth: []
-   *    summary: Delete an Trip.
+   *    summary: Delete a Trip. It cannot be published. 
    *    description: Delete an Trip with tripId. Requires a token to verify that the manager who wishes to delete the trip is allowed to do so.
    *    parameters:
    *      - name: tripId
