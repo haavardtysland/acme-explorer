@@ -5,7 +5,7 @@ import {
   deleteTrip,
   getSearchedTrips,
   getTrip,
-  getTripByActor,
+  getAppliedTrips,
   getTrips,
   getTripsByManager,
   updateTrip,
@@ -199,7 +199,7 @@ export function TripRoutes(app: Application) {
    *   delete:
    *    security:
    *       - bearerAuth: []
-   *    summary: Delete a Trip. It cannot be published. 
+   *    summary: Delete a Trip. It cannot be published.
    *    description: Delete an Trip with tripId. Requires a token to verify that the manager who wishes to delete the trip is allowed to do so.
    *    parameters:
    *      - name: tripId
@@ -334,10 +334,7 @@ export function TripRoutes(app: Application) {
     .route('api/v0/Trips/:tripId/Status')
     .put(isAuthorized([Role.Manager]), cancelTrip);
 
-  app.route('/api/v0/Actors/:actorId/Trips').get(getTripByActor);
-  app
-    .route('/api/v0/Actors/:actorId/Trips')
-    .get(verifyIdentity, getTripByActor);
+  app.route('/api/v0/Actors/:actorId/Trips').get(getAppliedTrips);
 
   app
     .route('/api/v0/Managers/:managerId/Trips')

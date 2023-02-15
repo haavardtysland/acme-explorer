@@ -120,7 +120,7 @@ const deleteTrip = async (
   };
 };
 
-const getTripsByActor = async (actorId: string): Promise<Trip[] | null> => {
+const getAppliedTrips = async (actorId: string): Promise<Trip[] | null> => {
   if (!Types.ObjectId.isValid(actorId)) {
     return null;
   }
@@ -244,7 +244,7 @@ export const TripRepository = {
   deleteTrip,
   getTrips,
   upadateTrip,
-  getTripsByActor,
+  getAppliedTrips,
   getTripsByManager,
   getSearchedTrips,
 };
