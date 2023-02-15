@@ -44,6 +44,9 @@ const createTrip = async (trip: Trip): Promise<Trip | null> => {
 };
 
 const getTrip = async (tripId: string): Promise<Trip | null> => {
+  if (!Types.ObjectId.isValid(tripId)) {
+    return null;
+  }
   return await TripModel.findById(tripId);
 };
 
