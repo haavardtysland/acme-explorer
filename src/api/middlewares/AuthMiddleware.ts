@@ -22,7 +22,7 @@ export const isAuthorized = (permissions?: Role[]) => {
     if (!permissions.includes(payload.role)) {
       return res.status(403).send(`User needs role: ${permissions}`);
     }
-    res.locals.actorId = payload._id;
+    res.locals.actorId = payload.id;
     next();
   };
 };
@@ -45,7 +45,7 @@ export const verifyIdentity = (
     return res.status(401).send('Access token is not valid');
   }
 
-  if (payload._id !== actorId) {
+  if (payload.id !== actorId) {
     return res
       .status(401)
       .send('Token do not belong to user you are trying to DELETE/UPDATE');

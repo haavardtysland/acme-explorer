@@ -38,7 +38,7 @@ export const login = async (req: Request, res: Response) => {
   }
 
   const response: LoginResponse = {
-    _id: actor._id,
+    id: actor._id,
     token: createAcesstoken(actor),
   };
   return res.status(200).send(response);
@@ -56,10 +56,10 @@ export const useRefreshToken = async (req: Request, res: Response) => {
     return res.send(401).send('User is not authenticated.');
   }
 
-  const actor: Actor | null = await ActorRepository.getActor(payload._id);
+  const actor: Actor | null = await ActorRepository.getActor(payload.id);
 
   if (actor == null) {
-    return res.status(404).send(`Cannot find User with _id: ${payload._id}`);
+    return res.status(404).send(`Cannot find User with _id: ${payload.id}`);
   }
 
   res.cookie('rt', createRefreshToken(actor._id), {

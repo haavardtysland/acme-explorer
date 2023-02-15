@@ -3,7 +3,7 @@ import { Actor, Role } from '../models/Actor';
 
 export type LoginResponse = {
   token?: string;
-  _id?: string;
+  id?: string;
   errorMsg?: string;
 };
 
@@ -13,12 +13,12 @@ export type LoginRequest = {
 };
 
 export type AccessTokenPaylod = {
-  _id: string;
+  id: string;
   role: Role;
 };
 
 export type RefreshTokenPayload = {
-  _id: string;
+  id: string;
 };
 
 export const createAcesstoken = (actor: Actor): string => {
