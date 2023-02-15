@@ -32,11 +32,15 @@ export const createApplication = async (req: Request, res: Response) => {
   }
 
   if (!trip.isPublished) {
-    return res.status(400).send('You cannot apply for a Trip that is not published');
+    return res
+      .status(400)
+      .send('You cannot apply for a Trip that is not published');
   }
 
   if (application.dateCreated < trip.startDate) {
-    return res.status(400).send('You cannot apply for a Trip that already has started');
+    return res
+      .status(400)
+      .send('You cannot apply for a Trip that already has started');
   }
 
   const createdApplication: Application | null =
@@ -89,4 +93,8 @@ export const changeApplicationStatus = async (req: Request, res: Response) => {
   }
 
   res.status(200).send('noe annet skjedde');
+};
+
+export const payTrip = (req: Request, res: Response) => {
+  res.status(501).send('Payment is not implemented');
 };
