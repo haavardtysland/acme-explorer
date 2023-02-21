@@ -5,12 +5,12 @@ import {
   deleteTrip,
   getSearchedTrips,
   getTrip,
-  getTripByActor,
+  getAppliedTrips,
   getTrips,
   getTripsByManager,
   updateTrip,
 } from '../controllers/TripController';
-import { isAuthorized, verifyIdentity } from '../middlewares/AuthMiddleware';
+import { isAuthorized } from '../middlewares/AuthMiddleware';
 import { Role } from '../models/Actor';
 
 export function TripRoutes(app: Application) {
@@ -346,10 +346,7 @@ export function TripRoutes(app: Application) {
     .route('api/v0/Trips/:tripId/Status')
     .put(isAuthorized([Role.Manager]), cancelTrip);
 
-  app.route('/api/v0/Actors/:actorId/Trips').get(getTripByActor);
-  app
-    .route('/api/v0/Actors/:actorId/Trips')
-    .get(verifyIdentity, getTripByActor);
+  app.route('/api/v0/Actors/:actorId/Trips').get(getAppliedTrips);
 
   app
     .route('/api/v0/Managers/:managerId/Trips')
