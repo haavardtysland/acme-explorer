@@ -14,6 +14,18 @@ import { isAuthorized, verifyIdentity } from '../middlewares/AuthMiddleware';
 import { Role } from '../models/Actor';
 
 export function TripRoutes(app: Application) {
+  const multer = require('multer');
+
+  const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, 'pictures');
+    },
+    filename: (req, file, cb) => {
+      cb(null, file.fieldname + '-' + Date.now());
+    },
+  });
+
+  const upload = multer({ storage: storage });
   /**
    * @swagger
    * /api/v0/Trips:
@@ -173,7 +185,7 @@ export function TripRoutes(app: Application) {
    */
   app
     .route('/api/v0/Trips')
-    .post(isAuthorized([Role.Manager]), createTrip)
+    .post(isAuthorized([Role.Manager]), upload.array('pictures'), createTrip)
     .get(getTrips);
 
   /**
@@ -199,7 +211,7 @@ export function TripRoutes(app: Application) {
    *   delete:
    *    security:
    *       - bearerAuth: []
-   *    summary: Delete a Trip. It cannot be published. 
+   *    summary: Delete a Trip. It cannot be published.
    *    description: Delete an Trip with tripId. Requires a token to verify that the manager who wishes to delete the trip is allowed to do so.
    *    parameters:
    *      - name: tripId

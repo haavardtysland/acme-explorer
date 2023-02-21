@@ -3,7 +3,7 @@ import { Trip } from '../../models/Trip';
 
 const TripSchema = new mongoose.Schema({
   ticker: { type: String, required: true },
-  managerId: {type: String, required: true},
+  managerId: { type: String, required: true },
   title: { type: String, required: true },
   description: { type: String, required: true },
   totalPrice: { type: Number, required: true },
@@ -19,7 +19,11 @@ const TripSchema = new mongoose.Schema({
   pictures: [
     {
       name: { type: String },
-      fileId: { type: mongoose.Schema.Types.ObjectId, ref: 'fs.files' },
+      description: { type: String },
+      img: {
+        data: { type: Buffer },
+        contentType: { type: String },
+      },
     },
   ],
   requirements: { type: [] },
