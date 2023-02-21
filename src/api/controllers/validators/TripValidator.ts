@@ -28,15 +28,6 @@ const stageValidator: JSONSchemaType<Stage> = {
   additionalProperties: false,
 };
 
-/* {
-  name: { type: String },
-  description: { type: String },
-  img: {
-    data: { type: Buffer },
-    contentType: { type: String },
-  },
-}, */
-
 const pictureValidator: JSONSchemaType<Picture> = {
   type: 'object',
   properties: {
