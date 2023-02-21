@@ -10,8 +10,8 @@ import { ModifyTripResponse } from '../repository/dtos/TripModels';
 import { TripRepository } from '../repository/TripRepository';
 import { tripValidator } from './validators/TripValidator';
 import Validadtor from './validators/Validator';
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
 export const getTrip = async (req: Request, res: Response) => {
   const tripId: string = req.params.tripId;
