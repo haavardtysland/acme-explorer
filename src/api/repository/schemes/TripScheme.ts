@@ -23,7 +23,11 @@ const TripSchema = new mongoose.Schema({
   pictures: [
     {
       name: { type: String },
-      fileId: { type: mongoose.Schema.Types.ObjectId, ref: 'fs.files' },
+      description: { type: String },
+      img: {
+        data: { type: Buffer },
+        contentType: { type: String },
+      },
     },
   ],
   requirements: { type: [] },

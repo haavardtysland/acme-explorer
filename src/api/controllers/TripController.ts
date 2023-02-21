@@ -1,4 +1,6 @@
 import { Request, Response } from 'express';
+import { stringify } from 'querystring';
+import { Picture } from '../models/Picture';
 import { Application } from '../models/Application';
 import { Stage } from '../models/Stage';
 import { Ticker } from '../models/Ticker';
@@ -8,6 +10,8 @@ import { ModifyTripResponse } from '../repository/dtos/TripModels';
 import { TripRepository } from '../repository/TripRepository';
 import { tripValidator } from './validators/TripValidator';
 import Validadtor from './validators/Validator';
+import fs from 'fs';
+import path from 'path';
 
 export const getTrip = async (req: Request, res: Response) => {
   const tripId: string = req.params.tripId;
@@ -68,13 +72,33 @@ export const cancelTrip = async (req: Request, res: Response) => {
 export const createTrip = async (req: Request, res: Response) => {
   const trip: Trip = req.body;
   trip.ticker = Ticker.newTicker();
-  trip.totalPrice = calculateTotalPrice(trip.stages);
   trip.managerId = res.locals.actorId;
   trip.isPublished = false;
   trip.status = {
     status: TStatus.Active,
     description: 'Trip created',
   };
+  trip.stages = JSON.parse(req.body.stages);
+  trip.requirements = JSON.parse(req.body.requirements);
+  trip.totalPrice = calculateTotalPrice(trip.stages);
+  const files = req.files as Express.Multer.File[];
+  if (files) {
+    const pictures: Picture[] = [];
+
+    files.forEach((file) => {
+      pictures.push({
+        name: file.originalname,
+        description: '', //TODO Maybe add description to the pucture
+        img: {
+          data: fs.readFileSync(
+            path.join(__dirname.slice(0, -20) + '/pictures/' + file.filename)
+          ),
+          contentType: 'image/png',
+        },
+      });
+    });
+    trip.pictures = pictures;
+  }
 
   const validate = Validadtor.compile<Trip>(tripValidator);
 

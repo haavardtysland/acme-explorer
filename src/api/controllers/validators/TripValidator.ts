@@ -1,5 +1,5 @@
 import { JSONSchemaType } from 'ajv';
-import { Picture } from '../../models/Picture';
+import { Image, Picture } from '../../models/Picture';
 import { Stage } from '../../models/Stage';
 import { Trip } from '../../models/Trip';
 import { TripStatus, TStatus } from '../../models/TripStatus';
@@ -32,10 +32,17 @@ const pictureValidator: JSONSchemaType<Picture> = {
   type: 'object',
   properties: {
     name: { type: 'string' },
-    fileId: { type: 'string' },
+    description: { type: 'string' },
+    img: {
+      type: 'object',
+      properties: {
+        data: { type: 'object' },
+        contentType: { type: 'string' },
+      },
+      required: ['data', 'contentType'],
+    },
   },
-
-  required: ['name', 'fileId'], //TODO check if it must be required
+  required: ['name', 'description', 'img'],
   additionalProperties: false,
 };
 
@@ -54,7 +61,7 @@ export const tripValidator: JSONSchemaType<Trip> = {
     status: tripStatusValidator,
     stages: { type: 'array', items: stageValidator },
     requirements: { type: 'array', items: { type: 'string' } },
-    pictures: { type: 'array', items: { type: 'string' }, nullable: true },
+    pictures: { type: 'array', items: pictureValidator, nullable: true },
     applications: { type: 'array', items: applicationValidator },
   },
   required: [
