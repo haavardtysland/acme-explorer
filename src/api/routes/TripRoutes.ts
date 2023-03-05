@@ -12,10 +12,9 @@ import {
 } from '../controllers/TripController';
 import { isAuthorized } from '../middlewares/AuthMiddleware';
 import { Role } from '../models/Actor';
+import multer from 'multer';
 
 export function TripRoutes(app: Application) {
-  const multer = require('multer');
-
   const storage = multer.diskStorage({
     destination: (req, file, cb) => {
       cb(null, 'pictures');
