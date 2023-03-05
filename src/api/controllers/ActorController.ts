@@ -1,4 +1,8 @@
 import { Request, Response } from 'express';
+import {
+  ErrorResponse,
+  isErrorResponse,
+} from '../error_handling/ErrorResponse';
 import { Actor, Role } from '../models/Actor';
 import { ActorRepository } from '../repository/ActorRepository';
 import { actorValidator } from './validators/ActorValidator';
@@ -53,11 +57,13 @@ export const createActor = async (req: Request, res: Response) => {
     return res.status(422).send(validate.errors);
   }
 
-  const createdActor: Actor | null = await ActorRepository.createActor(actor);
-  if (!createActor) {
-    res.send(500).send('Did not manage to create actor');
+  const response: Actor | ErrorResponse = await ActorRepository.createActor(
+    actor
+  );
+  if (isErrorResponse(response)) {
+    res.send(400).send(response.errorMessage);
   }
-  res.send(createdActor);
+  res.send(response);
 };
 
 export const createManager = async (req: Request, res: Response) => {
@@ -69,9 +75,11 @@ export const createManager = async (req: Request, res: Response) => {
     return res.status(422).send(validate.errors);
   }
 
-  const createdActor: Actor | null = await ActorRepository.createActor(actor);
-  if (!createActor) {
-    res.send(500).send('Did not manage to create manager');
+  const response: Actor | ErrorResponse = await ActorRepository.createActor(
+    actor
+  );
+  if (isErrorResponse(response)) {
+    res.send(400).send(response.errorMessage);
   }
-  res.send(createdActor);
+  res.send(response);
 };

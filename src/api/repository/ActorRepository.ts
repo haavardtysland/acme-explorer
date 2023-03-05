@@ -4,12 +4,20 @@ import { ActorModel } from './schemes/ActorScheme';
 import { hash } from 'bcryptjs';
 import { Types } from 'mongoose';
 import dotenv from 'dotenv';
+import {
+  createErrorResponse,
+  ErrorResponse,
+} from '../error_handling/ErrorResponse';
 dotenv.config();
 
-const createActor = async (actor: Actor): Promise<Actor | null> => {
+const createActor = async (actor: Actor): Promise<Actor | ErrorResponse> => {
   actor.password = await hash(actor.password, 8);
-  const res: Actor = await ActorModel.create(actor);
-  return res;
+  try {
+    const res: Actor = await ActorModel.create(actor);
+    return res;
+  } catch (error) {
+    return createErrorResponse(error.message);
+  }
 };
 
 const getActor = async (actorId: string): Promise<Actor | null> => {
