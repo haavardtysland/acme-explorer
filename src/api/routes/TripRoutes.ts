@@ -10,6 +10,7 @@ import {
   getTrips,
   getTripsByManager,
   updateTrip,
+  findTrips,
 } from '../controllers/TripController';
 import { isAuthorized } from '../middlewares/AuthMiddleware';
 import { Role } from '../models/Actor';
@@ -457,4 +458,6 @@ export function TripRoutes(app: Application) {
    *         description: Bad request
    */
   app.route('/api/v0/Trips/Search/:searchWord').get(getSearchedTrips);
+
+  app.route('/api/v0/Finder').get(findTrips);
 }

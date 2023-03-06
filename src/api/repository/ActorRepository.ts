@@ -40,6 +40,7 @@ const updateActor = async (actorId: string, actor: Actor): Promise<boolean> => {
   if (!doc) {
     return false;
   }
+  
   doc.overwrite(actor);
   await doc.save();
   return true;
