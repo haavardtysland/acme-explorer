@@ -14,15 +14,15 @@ export const getActor = async (req: Request, res: Response) => {
   if (!actor) {
     return res.status(404).send(`Actor with id: ${actorId} could not be found`);
   }
-  res.send(actor);
+  return res.send(actor);
 };
 
 export const getActors = async (req: Request, res: Response) => {
   const actors: Actor[] = await ActorRepository.getActors();
   if (!actors) {
-    res.status(404);
+    return res.status(404);
   }
-  res.send(actors);
+  return res.send(actors);
 };
 
 export const updateActor = async (req: Request, res: Response) => {
@@ -34,7 +34,7 @@ export const updateActor = async (req: Request, res: Response) => {
     return res.status(422).send(validate.errors);
   }
   await ActorRepository.updateActor(actorId, actor);
-  res.send(actor);
+  return res.send(actor);
 };
 
 export const deleteActor = async (req: Request, res: Response) => {
@@ -42,10 +42,10 @@ export const deleteActor = async (req: Request, res: Response) => {
   const isDeleted: boolean = await ActorRepository.deleteActor(actorId);
 
   if (!isDeleted) {
-    res.status(404).send(`Did not find actor with id: ${actorId}`);
-    return;
+    return res.status(404).send(`Did not find actor with id: ${actorId}`);
+    
   }
-  res.send('Actor successfully deleted');
+  return res.send('Actor successfully deleted');
 };
 
 export const createActor = async (req: Request, res: Response) => {
@@ -61,9 +61,9 @@ export const createActor = async (req: Request, res: Response) => {
     actor
   );
   if (isErrorResponse(response)) {
-    res.send(400).send(response.errorMessage);
+    return res.status(400).send(response.errorMessage);
   }
-  res.send(response);
+  return res.send(response);
 };
 
 export const createManager = async (req: Request, res: Response) => {
@@ -79,7 +79,7 @@ export const createManager = async (req: Request, res: Response) => {
     actor
   );
   if (isErrorResponse(response)) {
-    res.send(400).send(response.errorMessage);
+    return res.send(400).send(response.errorMessage);
   }
-  res.send(response);
+  return res.send(response);
 };
