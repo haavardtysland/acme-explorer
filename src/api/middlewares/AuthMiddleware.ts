@@ -8,7 +8,7 @@ export const isAuthorized = (permissions?: Role[]) => {
     if (authHeader == undefined) {
       return res
         .status(401)
-        .send('You need to provide a bearer token as AUTHORIZATION header');
+        .send('You need to provide a bearer token in AUTHORIZATION header');
     }
     const payload: AccessTokenPaylod | null = verifyAcessToken(authHeader);
     if (!payload) {

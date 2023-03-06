@@ -10,7 +10,7 @@ const TripSchema = new mongoose.Schema({
   startDate: { type: Date, required: true },
   endDate: { type: Date, required: true },
   status: {
-    status: { type: String, required: true, enum: ['ACTIVE, CANCELLED'] },
+    status: { type: String, required: true, enum: ['ACTIVE', 'CANCELLED'] },
     description: { type: String, required: true },
   },
   stages: [

@@ -1,5 +1,5 @@
 import { JSONSchemaType } from 'ajv';
-import { Image, Picture } from '../../models/Picture';
+import { Picture } from '../../models/Picture';
 import { Stage } from '../../models/Stage';
 import { Trip } from '../../models/Trip';
 import { TripStatus, TStatus } from '../../models/TripStatus';
