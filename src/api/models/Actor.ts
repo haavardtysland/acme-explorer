@@ -1,4 +1,4 @@
-import { Finder } from "./Finder";
+import { Finder } from './Finder';
 
 export enum Role {
   Administrator = 'ADMINISTRATOR',
@@ -15,5 +15,4 @@ export type Actor = {
   address?: string;
   role: Role;
   password: string;
-  finder: Finder;
 };

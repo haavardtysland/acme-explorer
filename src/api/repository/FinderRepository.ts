@@ -1,4 +1,5 @@
 import startOfDay from 'date-fns/startOfDay';
+import endOfDay from 'date-fns/endOfDay';
 import {
   createErrorResponse,
   ErrorResponse,
@@ -11,7 +12,6 @@ const findTrips = async (
   parameters: Finder
 ): Promise<Trip[] | ErrorResponse> => {
   try {
-    console.log(parameters);
     const query = TripModel.find();
     if (parameters.fromPrice) {
       query.where('totalPrice', { $gte: parameters.fromPrice });
@@ -31,11 +31,11 @@ const findTrips = async (
       });
     }
 
-    if (parameters.fromDate) {
+    if (parameters.fromDate && !isNaN(parameters.fromDate.getTime())) {
       query.where('startDate', { $gte: startOfDay(parameters.fromDate) });
     }
 
-    if (parameters.toDate) {
+    if (parameters.toDate && !isNaN(parameters.toDate.getTime())) {
       query.where('endDate', { $lte: startOfDay(parameters.toDate) });
     }
 
