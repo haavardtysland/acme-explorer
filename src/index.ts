@@ -12,7 +12,7 @@ import { ApplicationRoutes } from './api/routes/ApplicationRoutes';
 
 dotenv.config();
 
-const app: Application = express();
+export const app: Application = express();
 const port = process.env.PORT;
 
 app.use(bodyParser.urlencoded({ extended: false }));
