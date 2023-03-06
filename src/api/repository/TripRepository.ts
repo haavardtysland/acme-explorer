@@ -1,9 +1,15 @@
 import { Types } from 'mongoose';
+import {
+  createErrorResponse,
+  ErrorResponse,
+} from '../error_handling/ErrorResponse';
+import { FinderParameters } from '../models/FinderParameters';
 import { Trip } from '../models/Trip';
 import { AStatus } from './../models/ApplicationStatus';
 import { TStatus } from './../models/TripStatus';
 import { ModifyTripResponse } from './dtos/TripModels';
 import { TripModel } from './schemes/TripScheme';
+import startOfDay from 'date-fns/startOfDay';
 
 const cancelTrip = async (
   tripId: string,
@@ -32,7 +38,7 @@ const cancelTrip = async (
   doc.overwrite({
     status: { status: TStatus.Cancelled, description: 'Trip is cancelled' },
   });
-  
+
   await doc.save();
   return {
     isModified: true,
@@ -57,7 +63,7 @@ const getTrips = async (): Promise<Trip[]> => {
   return await TripModel.find();
 };
 
-const upadateTrip = async (
+const updateTrip = async (
   tripId: string,
   managerId: string,
   trip: Trip
@@ -240,14 +246,54 @@ const getSearchedTrips = async (searchWord: string): Promise<Trip[] | null> => {
   return response;
 };
 
+const findTrips = async (
+  parameters: FinderParameters
+): Promise<Trip[] | ErrorResponse> => {
+  try {
+    console.log(parameters);
+    const query = TripModel.find();
+    if (parameters.fromPrice) {
+      query.where('totalPrice', { $gte: parameters.fromPrice });
+    }
+
+    if (parameters.toPrice) {
+      query.where('totalPrice', { $lte: parameters.toPrice });
+    }
+
+    if (parameters.keyWord) {
+      query.where({
+        $or: [
+          { ticker: new RegExp(parameters.keyWord, 'i') },
+          { title: new RegExp(parameters.keyWord, 'i') },
+          { description: new RegExp(parameters.keyWord, 'i') },
+        ],
+      });
+    }
+
+    if (parameters.fromDate) {
+      query.where('startDate', { $gte: startOfDay(parameters.fromDate) });
+    }
+
+    if (parameters.toDate) {
+      query.where('endDate', { $lte: startOfDay(parameters.toDate) });
+    }
+
+    return await query.exec();
+  } catch (error) {
+    console.log(error);
+    return createErrorResponse(error.message);
+  }
+};
+
 export const TripRepository = {
   cancelTrip,
   createTrip,
   getTrip,
   deleteTrip,
   getTrips,
-  upadateTrip,
+  updateTrip,
   getAppliedTrips,
   getTripsByManager,
   getSearchedTrips,
+  findTrips,
 };
