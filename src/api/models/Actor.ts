@@ -1,3 +1,5 @@
+import { Finder } from './Finder';
+
 export enum Role {
   Administrator = 'ADMINISTRATOR',
   Manager = 'MANAGER',

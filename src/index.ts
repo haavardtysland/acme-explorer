@@ -9,6 +9,7 @@ import { initMongoDBConnection } from './api/config/moongose';
 import { ActorRoutes } from './api/routes/ActorRoutes';
 import { AuthRoutes } from './api/routes/AuthRoutes';
 import { ApplicationRoutes } from './api/routes/ApplicationRoutes';
+import { FinderRoutes } from './api/routes/FinderRoutes';
 
 dotenv.config();
 
@@ -29,6 +30,7 @@ AuthRoutes(app);
 ActorRoutes(app);
 TripRoutes(app);
 ApplicationRoutes(app);
+FinderRoutes(app); 
 
 (async () => {
   try {
