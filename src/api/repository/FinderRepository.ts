@@ -7,6 +7,11 @@ import {
 import { Finder } from '../models/Finder';
 import { Trip } from '../models/Trip';
 import { TripModel } from './schemes/TripScheme';
+import { Types } from 'mongoose';
+import { ActorModel } from './schemes/ActorScheme';
+import { ActorFinder } from '../models/ActorFinder';
+import { create } from 'domain';
+import { IFinderRepository } from './interfaces/IFinderRepository';
 
 const findTrips = async (
   parameters: Finder
@@ -46,8 +51,29 @@ const findTrips = async (
   }
 };
 
-const putFinder = (actorId: string, finder: Finder) => {
-  //Endre finderen til en actor
+const updateFinder = async (
+  actorId: string,
+  finder: ActorFinder
+): Promise<ActorFinder | ErrorResponse> => {
+  try {
+    const actor = await ActorModel.findOneAndUpdate(
+      { 'actors._id': actorId },
+      {
+        $set: {
+          'actors.$.finder': {
+            keyword: finder.keyWord,
+            fromPrice: finder.fromPrice,
+            toPrice: finder.fromPrice,
+            fromDate: finder.fromDate,
+            toDate: finder.toDate,
+          },
+        },
+      }
+    );
+  } catch (error) {
+    return createErrorResponse(error.message);
+  }
+  return finder;
 };
 
-export const FinderRepository = { findTrips, putFinder };
+export const FinderRepository = { findTrips, updateFinder };

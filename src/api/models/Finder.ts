@@ -3,5 +3,5 @@ export type Finder = {
   fromPrice?: number;
   toPrice?: number;
   fromDate?: Date;
-  toDate?: Date;
+  toDate?: Date; 
 };

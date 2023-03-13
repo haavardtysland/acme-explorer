@@ -8,9 +8,27 @@ import { Request, Response } from 'express';
 import Validator from './validators/Validator';
 import { FinderRepository } from '../repository/FinderRepository';
 import { Trip } from '../models/Trip';
+import { ActorFinder } from '../models/ActorFinder';
+import { actorFinderValidator } from './validators/ActorValidator';
 
-export const updateFinder = () => {
-  //Do something
+export const updateFinder = async (req: Request, res: Response) => {
+  //Do something res.locals.actorId
+  const actorId = res.locals.actorId;
+  const finderObject: ActorFinder = req.body;
+  const validate = Validator.compile<ActorFinder>(actorFinderValidator);
+
+  if (!validate(finderObject)) {
+    return res.status(400).send(validate.errors);
+  }
+
+  const response: ActorFinder | ErrorResponse =
+    await FinderRepository.updateFinder(actorId, finderObject);
+
+  if (isErrorResponse(response)) {
+    return res.send(400).send(response.errorMessage);
+  }
+
+  return res.status(200).send('Finder successfully updated');
 };
 
 export const findTrips = async (req: Request, res: Response) => {

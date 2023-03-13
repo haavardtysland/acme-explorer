@@ -13,6 +13,13 @@ const ActorSchema = new mongoose.Schema({
   password: { type: String, required: true },
   phone: { type: String, required: false },
   address: { type: String, required: false },
+  finder: {
+    keyWord: { type: String, required: false },
+    fromPrice: { type: Number, required: false },
+    toPrice: { type: Number, required: false },
+    fromDate: { type: Date, required: false },
+    toDate: { type: Date, required: false },
+  },
 });
 
 export const ActorModel = mongoose.model<Actor>(
