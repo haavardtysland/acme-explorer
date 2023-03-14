@@ -29,8 +29,16 @@ class TwoScenariosDiagnosis extends Simulation {
 
       
 	object CreateCustomer {
-		val createCustomer = exec(http("POST ACTOR-CUSTOMER2")
+		val createCustomer = exec(http("POST ACTOR-CUSTOMER")
 			.post("/api/v0/Actors")
+			.body(RawFileBody("actor-customer.json")).check(status.in(200, 400))
+			.headers(initHeaders))
+		.pause(1)
+	}
+
+		object ModifyCustomer {
+		val createCustomer = exec(http("POST ACTOR-CUSTOMER")
+			.put("/api/v0/Actors")
 			.body(RawFileBody("actor-customer.json")).check(status.in(200, 400))
 			.headers(initHeaders))
 		.pause(1)
