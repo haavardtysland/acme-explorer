@@ -51,7 +51,7 @@ export const deleteActor = async (req: Request, res: Response) => {
   if (!isDeleted) {
     return res.status(400).send(`Did not find actor with id: ${actorId}`);
   }
-  
+
   return res.send('Actor successfully deleted');
 };
 
@@ -59,11 +59,11 @@ export const createActor = async (req: Request, res: Response) => {
   const actor: Actor = req.body;
   actor.role = Role.Explorer;
   actor.finder = {
-    keyWord: '',
-    fromPrice: 0,
-    toPrice: 0,
-    fromDate: '2021-01-01',
-    toDate: '2030-01-01',
+    keyWord: null,
+    fromPrice: null,
+    toPrice: null,
+    fromDate: null,
+    toDate: null,
   };
   const validate = Validator.compile<Actor>(actorValidator);
 
@@ -75,9 +75,9 @@ export const createActor = async (req: Request, res: Response) => {
     actor
   );
   if (isErrorResponse(response)) {
-    return res.send(400).send(response.errorMessage);
+    return res.status(400).send(response.errorMessage);
   }
-  res.send(response);
+  return res.send(response);
 };
 
 export const createManager = async (req: Request, res: Response) => {
