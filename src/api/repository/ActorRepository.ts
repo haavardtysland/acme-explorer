@@ -1,5 +1,4 @@
 import { Actor } from '../models/Actor';
-import { IActorRepository } from './interfaces/IActorRepository';
 import { ActorModel } from './schemes/ActorScheme';
 import { hash } from 'bcryptjs';
 import { Types } from 'mongoose';
@@ -41,6 +40,11 @@ const updateActor = async (
     if (!doc) {
       return false;
     }
+    
+    if (updateActorDto.password) {
+      updateActorDto.password = await hash(updateActorDto.password, 8);
+    }
+
     doc.set(updateActorDto);
     await doc.save();
     return true;
