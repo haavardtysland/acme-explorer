@@ -31,12 +31,16 @@ const options = {
 const swaggerSpec = swaggerJSDoc(options);
 
 function swaggerDocs(app) {
-  app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+  const isProd = process.env.ENV == 'PROD';
 
-  app.get('docs.json', (req, res) => {
-    res.setHeader('Content-Type', 'application/json');
-    res.send(swaggerSpec);
-  });
+  if (!isProd) {
+    app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+    app.get('docs.json', (req, res) => {
+      res.setHeader('Content-Type', 'application/json');
+      res.send(swaggerSpec);
+    });
+  }
 }
 
 export default swaggerDocs;

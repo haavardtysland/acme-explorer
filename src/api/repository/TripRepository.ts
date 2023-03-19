@@ -32,7 +32,7 @@ const cancelTrip = async (
   doc.overwrite({
     status: { status: TStatus.Cancelled, description: 'Trip is cancelled' },
   });
-  
+
   await doc.save();
   return {
     isModified: true,
@@ -57,7 +57,7 @@ const getTrips = async (): Promise<Trip[]> => {
   return await TripModel.find();
 };
 
-const upadateTrip = async (
+const updateTrip = async (
   tripId: string,
   managerId: string,
   trip: Trip
@@ -246,7 +246,7 @@ export const TripRepository = {
   getTrip,
   deleteTrip,
   getTrips,
-  upadateTrip,
+  updateTrip,
   getAppliedTrips,
   getTripsByManager,
   getSearchedTrips,

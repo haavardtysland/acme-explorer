@@ -1,11 +1,12 @@
 import { Application } from 'express';
+import multer from 'multer';
 import {
   cancelTrip,
   createTrip,
   deleteTrip,
+  getAppliedTrips,
   getSearchedTrips,
   getTrip,
-  getAppliedTrips,
   getTrips,
   getTripsByManager,
   updateTrip,
@@ -14,8 +15,6 @@ import { isAuthorized } from '../middlewares/AuthMiddleware';
 import { Role } from '../models/Actor';
 
 export function TripRoutes(app: Application) {
-  const multer = require('multer');
-
   const storage = multer.diskStorage({
     destination: (req, file, cb) => {
       cb(null, 'pictures');
@@ -180,7 +179,15 @@ export function TripRoutes(app: Application) {
    *               items:
    *                 type: string
    *                 default: waterbottle
-   *
+   *    responses:
+   *      200:
+   *        description: Successful
+   *      400:
+   *        description: Bad Request
+   *      422:
+   *        description: Unprocessable Entity
+   *      403:
+   *        description: Forbidden
    *
    */
   app

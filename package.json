@@ -7,7 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "ts-node src/index.ts",
     "dev": "nodemon src/index.ts",
-    "build": "tsc"
+    "build": "tsc",
+    "gatling": "./src/api/gatling/bin/gatling.sh",
+    "gatling-win": "./src/api/gatling/bin/gatling.bat"
   },
   "repository": {
     "type": "git",
@@ -30,6 +32,7 @@
     "body-parser": "^1.20.1",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
+    "date-fns": "^2.29.3",
     "dotenv": "^16.0.3",
     "ejs": "^3.1.8",
     "express": "^4.18.2",

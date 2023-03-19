@@ -1,0 +1,10 @@
+{
+    "name": "CustomerModifiedName",
+    "surname": "CustomerModifiedSurname",
+    "email": "customer2@fakemail.com",
+    "phone": "+34612345678",
+    "address": "myAddress",
+    "role": "CUSTOMER",
+    "password": "my_Pass!!!123"
+  }
+  

@@ -13,6 +13,7 @@ import Validadtor from './validators/Validator';
 import fs from 'fs';
 import path from 'path';
 
+
 export const getTrip = async (req: Request, res: Response) => {
   const tripId: string = req.params.tripId;
   const trip: Trip | null = await TripRepository.getTrip(tripId);
@@ -40,7 +41,7 @@ export const updateTrip = async (req: Request, res: Response) => {
     return res.status(422).send(validate.errors);
   }
 
-  const response: ModifyTripResponse = await TripRepository.upadateTrip(
+  const response: ModifyTripResponse = await TripRepository.updateTrip(
     tripId,
     managerId,
     trip
@@ -78,8 +79,10 @@ export const createTrip = async (req: Request, res: Response) => {
     status: TStatus.Active,
     description: 'Trip created',
   };
-  trip.stages = JSON.parse(req.body.stages);
-  trip.requirements = JSON.parse(req.body.requirements);
+  if (trip.stages == null && trip.requirements == null) {
+    trip.stages = JSON.parse(req.body.stages);
+    trip.requirements = JSON.parse(req.body.requirements);
+  }
   trip.totalPrice = calculateTotalPrice(trip.stages);
   const files = req.files as Express.Multer.File[];
   if (files) {
@@ -170,3 +173,5 @@ export const getSearchedTrips = async (req: Request, res: Response) => {
   }
   res.status(200).send(trips);
 };
+
+
