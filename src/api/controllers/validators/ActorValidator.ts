@@ -1,8 +1,7 @@
 import { JSONSchemaType } from 'ajv';
-import { addAbortSignal } from 'stream';
 import { Actor, Role } from '../../models/Actor';
 import { ActorFinder } from '../../models/ActorFinder';
-import { finderValidator } from './FinderValidator';
+import { UpdateActorDto } from '../../models/dtos/UpdateActorDto';
 
 export const actorFinderValidator: JSONSchemaType<ActorFinder> = {
   type: 'object',
@@ -32,5 +31,19 @@ export const actorValidator: JSONSchemaType<Actor> = {
     finder: actorFinderValidator,
   },
   required: ['name', 'surname', 'email', 'password'],
+  additionalProperties: false,
+};
+
+export const updateActorValidator: JSONSchemaType<UpdateActorDto> = {
+  type: 'object',
+  properties: {
+    name: { type: 'string' },
+    surname: { type: 'string' },
+    email: { type: 'string', format: 'email' },
+    phone: { type: 'string', nullable: true },
+    address: { type: 'string', nullable: true },
+    password: { type: 'string' },
+  },
+  required: [],
   additionalProperties: false,
 };
