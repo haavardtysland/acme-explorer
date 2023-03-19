@@ -1,18 +1,18 @@
 import { Application } from 'express';
+import multer from 'multer';
 import {
   cancelTrip,
   createTrip,
   deleteTrip,
+  getAppliedTrips,
   getSearchedTrips,
   getTrip,
-  getAppliedTrips,
   getTrips,
   getTripsByManager,
   updateTrip,
 } from '../controllers/TripController';
 import { isAuthorized } from '../middlewares/AuthMiddleware';
 import { Role } from '../models/Actor';
-import multer from 'multer';
 
 export function TripRoutes(app: Application) {
   const storage = multer.diskStorage({
@@ -179,6 +179,16 @@ export function TripRoutes(app: Application) {
    *               items:
    *                 type: string
    *                 default: waterbottle
+   *    responses:
+   *      200:
+   *        description: Successful
+   *      400:
+   *        description: Bad Request
+   *      422:
+   *        description: Unprocessable Entity
+   *      403:
+   *        description: Forbidden
+   *
    */
   app
     .route('/api/v0/Trips')
