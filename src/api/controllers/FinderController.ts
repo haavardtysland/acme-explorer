@@ -12,7 +12,6 @@ import { ActorFinder } from '../models/ActorFinder';
 import { actorFinderValidator } from './validators/ActorValidator';
 
 export const updateFinder = async (req: Request, res: Response) => {
-  //Do something res.locals.actorId
   const actorId = res.locals.actorId;
   const finderObject: ActorFinder = req.body;
   const validate = Validator.compile<ActorFinder>(actorFinderValidator);
@@ -60,7 +59,6 @@ export const findTrips = async (req: Request, res: Response) => {
   );
 
   if (isErrorResponse(response)) {
-    console.log('hore');
     return res.status(500).send(response.errorMessage);
   }
 

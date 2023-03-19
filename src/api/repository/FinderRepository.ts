@@ -1,5 +1,4 @@
 import startOfDay from 'date-fns/startOfDay';
-import endOfDay from 'date-fns/endOfDay';
 import {
   createErrorResponse,
   ErrorResponse,
@@ -7,17 +6,14 @@ import {
 import { Finder } from '../models/Finder';
 import { Trip } from '../models/Trip';
 import { TripModel } from './schemes/TripScheme';
-import { Types } from 'mongoose';
 import { ActorModel } from './schemes/ActorScheme';
 import { ActorFinder } from '../models/ActorFinder';
-import { create } from 'domain';
-import { IFinderRepository } from './interfaces/IFinderRepository';
 
 const findTrips = async (
   parameters: Finder
 ): Promise<Trip[] | ErrorResponse> => {
   try {
-    const query = TripModel.find();
+    const query = TripModel.find().limit(10);
     if (parameters.fromPrice) {
       query.where('totalPrice', { $gte: parameters.fromPrice });
     }
@@ -46,7 +42,6 @@ const findTrips = async (
 
     return await query.exec();
   } catch (error) {
-    console.log(error);
     return createErrorResponse(error.message);
   }
 };
@@ -56,20 +51,9 @@ const updateFinder = async (
   finder: ActorFinder
 ): Promise<ActorFinder | ErrorResponse> => {
   try {
-    const actor = await ActorModel.findOneAndUpdate(
-      { 'actors._id': actorId },
-      {
-        $set: {
-          'actors.$.finder': {
-            keyword: finder.keyWord,
-            fromPrice: finder.fromPrice,
-            toPrice: finder.fromPrice,
-            fromDate: finder.fromDate,
-            toDate: finder.toDate,
-          },
-        },
-      }
-    );
+    const actor = await ActorModel.findByIdAndUpdate(actorId, {
+      finder: finder,
+    });
   } catch (error) {
     return createErrorResponse(error.message);
   }
