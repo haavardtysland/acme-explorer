@@ -18,15 +18,15 @@ export const getActor = async (req: Request, res: Response) => {
   if (!actor) {
     return res.status(404).send(`Actor with id: ${actorId} could not be found`);
   }
-  res.send(actor);
+  return res.send(actor);
 };
 
 export const getActors = async (req: Request, res: Response) => {
   const actors: Actor[] = await ActorRepository.getActors();
   if (!actors) {
-    res.status(404);
+    return res.status(404);
   }
-  res.send(actors);
+  return res.send(actors);
 };
 
 export const updateActor = async (req: Request, res: Response) => {
@@ -49,9 +49,9 @@ export const deleteActor = async (req: Request, res: Response) => {
   const isDeleted: boolean = await ActorRepository.deleteActor(actorId);
 
   if (!isDeleted) {
-    return res.status(400).send(`Did not find actor with id: ${actorId}`);
+    return res.status(404).send(`Did not find actor with id: ${actorId}`);
+    
   }
-
   return res.send('Actor successfully deleted');
 };
 
@@ -95,5 +95,5 @@ export const createManager = async (req: Request, res: Response) => {
   if (isErrorResponse(response)) {
     return res.send(400).send(response.errorMessage);
   }
-  res.send(response);
+  return res.send(response);
 };
