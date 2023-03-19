@@ -1,4 +1,5 @@
 import { JSONSchemaType } from 'ajv';
+import { UpdateTripDto } from '../../models/dtos/UpdateTripDto';
 import { Picture } from '../../models/Picture';
 import { Stage } from '../../models/Stage';
 import { Trip } from '../../models/Trip';
@@ -79,3 +80,19 @@ export const tripValidator: JSONSchemaType<Trip> = {
 
   additionalProperties: false,
 };
+
+export const updateTripValidator: JSONSchemaType<UpdateTripDto> = {
+  type: 'object',
+  properties: {
+    title: { type: 'string' },
+    description: { type: 'string' },
+    startDate: { type: 'string', format: 'date' },
+    endDate: { type: 'string', format: 'date' },
+    isPublished: { type: 'boolean' },
+    stages: { type: 'array', items: stageValidator },
+    requirements: { type: 'array', items: { type: 'string' } },
+    pictures: { type: 'array', items: pictureValidator, nullable: true },
+  },
+  required: [],
+  additionalProperties: false,
+}

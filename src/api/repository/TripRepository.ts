@@ -2,8 +2,9 @@ import { Types } from 'mongoose';
 import { Trip } from '../models/Trip';
 import { AStatus } from './../models/ApplicationStatus';
 import { TStatus } from './../models/TripStatus';
-import { ModifyTripResponse } from './dtos/TripModels';
+import { ModifyTripResponse } from '../models/dtos/TripModels';
 import { TripModel } from './schemes/TripScheme';
+import { UpdateTripDto } from '../models/dtos/UpdateTripDto';
 
 const cancelTrip = async (
   tripId: string,
@@ -60,7 +61,7 @@ const getTrips = async (): Promise<Trip[]> => {
 const updateTrip = async (
   tripId: string,
   managerId: string,
-  trip: Trip
+  trip: UpdateTripDto
 ): Promise<ModifyTripResponse> => {
   const doc = await TripModel.findOne({ _id: tripId });
 
@@ -82,7 +83,7 @@ const updateTrip = async (
     };
   }
 
-  doc.overwrite(trip);
+  doc.set(trip);
   await doc.save();
   return {
     isModified: true,
