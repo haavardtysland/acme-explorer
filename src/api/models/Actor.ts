@@ -15,5 +15,6 @@ export type Actor = {
   address?: string;
   role: Role;
   password: string;
+  isBanned: boolean;
   finder: ActorFinder;
 };

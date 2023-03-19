@@ -8,6 +8,7 @@ import {
   ErrorResponse,
 } from '../error_handling/ErrorResponse';
 import { UpdateActorDto } from '../models/dtos/UpdateActorDto';
+import { IActorRepository } from './interfaces/IActorRepository';
 dotenv.config();
 
 const createActor = async (actor: Actor): Promise<Actor | ErrorResponse> => {
@@ -40,7 +41,7 @@ const updateActor = async (
     if (!doc) {
       return false;
     }
-    
+
     if (updateActorDto.password) {
       updateActorDto.password = await hash(updateActorDto.password, 8);
     }
@@ -66,11 +67,27 @@ const getUserByEmail = async (email: string): Promise<Actor | null> => {
   return await ActorModel.findOne({ email: email });
 };
 
-export const ActorRepository = {
+const changeBannedStatus = async (
+  actorId: string
+): Promise<boolean | null | ErrorResponse> => {
+  try {
+    return await ActorModel.findOneAndUpdate(
+      { _id: actorId },
+
+      [{ $set: { isBanned: { $eq: [false, '$isBanned'] } } }],
+      { new: true }
+    );
+  } catch (err) {
+    return createErrorResponse(err.message);
+  }
+};
+
+export const ActorRepository: IActorRepository = {
   createActor,
   getActor,
   deleteActor,
   getActors,
   updateActor,
   getUserByEmail,
+  changeBannedStatus,
 };
