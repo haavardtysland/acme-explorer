@@ -394,7 +394,6 @@ export function TripRoutes(app: Application) {
    *        description: The id of the trip
    *        schema:
    *          type: string
-   *
    *    responses:
    *      default:
    *        description: successfully cancelled trip
@@ -404,8 +403,194 @@ export function TripRoutes(app: Application) {
     .route('api/v0/Trips/:tripId/Status')
     .put(isAuthorized([Role.Manager]), cancelTrip);
 
+  /**
+   * @swagger
+   * /api/v0/Actors/{actorId}/Trips:
+   *   get:
+   *    summary: Get all trips an actor has applied for.
+   *    tags:
+   *      - Trips
+   *    description: Get all trips an actor has applied for.
+   *    responses:
+   *       200:
+   *         description: Success
+   *         content:
+   *          application/json:
+   *            schema:
+   *              type: array
+   *              items:
+   *                type: object
+   *                properties:
+   *                  _id:
+   *                    type: string
+   *                  ticker:
+   *                    type: string
+   *                  title:
+   *                    type: string
+   *                  description:
+   *                    type: string
+   *                  totalPrice:
+   *                    type: number
+   *                  startDate:
+   *                    type: date
+   *                  endDate:
+   *                    type: date
+   *                  status:
+   *                    type: object
+   *                    properties:
+   *                      status:
+   *                        type: string
+   *                      description:
+   *                        type: string
+   *                  stages:
+   *                    type: array
+   *                    items:
+   *                      type: object
+   *                      properties:
+   *                        title:
+   *                          type: string
+   *                        description:
+   *                          type: string
+   *                        price:
+   *                          type: number
+   *                  pictures:
+   *                    type: array
+   *                    items:
+   *                      type: object
+   *                      properties:
+   *                        name:
+   *                          type: string
+   *                        fileId:
+   *                          type: string
+   *                  requirements:
+   *                    type: array
+   *                    items:
+   *                      type: string
+   *                  isPublished:
+   *                    type: boolean
+   *                  applications:
+   *                    type: array
+   *                    items:
+   *                      type: object
+   *                      properties:
+   *                        _id:
+   *                          type: string
+   *                        dateCreated:
+   *                          type: date
+   *                        status:
+   *                          type: object
+   *                          properties:
+   *                            status:
+   *                              type: string
+   *                            description:
+   *                              type: string
+   *                        comments:
+   *                          type: array
+   *                          items:
+   *                            type: string
+   *                        actorId:
+   *                          type: string
+   *                        tripId:
+   *                          type: string
+   *       400:
+   *         description: Bad request
+   */
   app.route('/api/v0/Actors/:actorId/Trips').get(getAppliedTrips);
 
+  /**
+   * @swagger
+   * /api/v0/Managers/{managerId}Trips:
+   *   get:
+   *    summary: Get all trips created by a given manager.
+   *    security:
+   *      - bearerAuth: []
+   *    tags:
+   *      - Trips
+   *    description: Get all trips created by a given manager. Needs token that confirms requester is a manager and is allowed to retrieve the information.
+   *    responses:
+   *       200:
+   *         description: Success
+   *         content:
+   *          application/json:
+   *            schema:
+   *              type: array
+   *              items:
+   *                type: object
+   *                properties:
+   *                  _id:
+   *                    type: string
+   *                  ticker:
+   *                    type: string
+   *                  title:
+   *                    type: string
+   *                  description:
+   *                    type: string
+   *                  totalPrice:
+   *                    type: number
+   *                  startDate:
+   *                    type: date
+   *                  endDate:
+   *                    type: date
+   *                  status:
+   *                    type: object
+   *                    properties:
+   *                      status:
+   *                        type: string
+   *                      description:
+   *                        type: string
+   *                  stages:
+   *                    type: array
+   *                    items:
+   *                      type: object
+   *                      properties:
+   *                        title:
+   *                          type: string
+   *                        description:
+   *                          type: string
+   *                        price:
+   *                          type: number
+   *                  pictures:
+   *                    type: array
+   *                    items:
+   *                      type: object
+   *                      properties:
+   *                        name:
+   *                          type: string
+   *                        fileId:
+   *                          type: string
+   *                  requirements:
+   *                    type: array
+   *                    items:
+   *                      type: string
+   *                  isPublished:
+   *                    type: boolean
+   *                  applications:
+   *                    type: array
+   *                    items:
+   *                      type: object
+   *                      properties:
+   *                        _id:
+   *                          type: string
+   *                        dateCreated:
+   *                          type: date
+   *                        status:
+   *                          type: object
+   *                          properties:
+   *                            status:
+   *                              type: string
+   *                            description:
+   *                              type: string
+   *                        comments:
+   *                          type: array
+   *                          items:
+   *                            type: string
+   *                        actorId:
+   *                          type: string
+   *                        tripId:
+   *                          type: string
+   *       400:
+   *         description: Bad request
+   */
   app
     .route('/api/v0/Managers/:managerId/Trips')
     .get(isAuthorized([Role.Manager]), getTripsByManager);

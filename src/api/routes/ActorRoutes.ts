@@ -86,10 +86,6 @@ export function ActorRoutes(app: Application) {
    *                 default: 12345678
    *     responses:
    *       200:
-   *         description: Sucesss
-   *
-   *     responses:
-   *       200:
    *         description: Success
    *       422:
    *         description: Unprocessable Entity
