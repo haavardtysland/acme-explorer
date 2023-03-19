@@ -6,13 +6,13 @@ import { Stage } from '../models/Stage';
 import { Ticker } from '../models/Ticker';
 import { Trip } from '../models/Trip';
 import { TStatus } from '../models/TripStatus';
-import { ModifyTripResponse } from '../repository/dtos/TripModels';
+import { ModifyTripResponse } from '../models/dtos/TripModels';
 import { TripRepository } from '../repository/TripRepository';
-import { tripValidator } from './validators/TripValidator';
+import { tripValidator, updateTripValidator } from './validators/TripValidator';
 import Validadtor from './validators/Validator';
 import fs from 'fs';
 import path from 'path';
-
+import { UpdateTripDto } from '../models/dtos/UpdateTripDto';
 
 export const getTrip = async (req: Request, res: Response) => {
   const tripId: string = req.params.tripId;
@@ -32,10 +32,10 @@ export const getTrips = async (req: Request, res: Response) => {
 };
 
 export const updateTrip = async (req: Request, res: Response) => {
-  const trip: Trip = req.body;
+  const trip: UpdateTripDto = req.body;
   const tripId: string = req.params.tripId;
   const managerId = res.locals.actorId;
-  const validate = Validadtor.compile<Trip>(tripValidator);
+  const validate = Validadtor.compile<UpdateTripDto>(updateTripValidator);
 
   if (!validate(trip)) {
     return res.status(422).send(validate.errors);
@@ -47,7 +47,7 @@ export const updateTrip = async (req: Request, res: Response) => {
     trip
   );
 
-  res.status(response.statusCode).send(response.message);
+  return res.status(response.statusCode).send(response.message);
 };
 
 export const deleteTrip = async (req: Request, res: Response) => {
@@ -173,5 +173,3 @@ export const getSearchedTrips = async (req: Request, res: Response) => {
   }
   res.status(200).send(trips);
 };
-
-
