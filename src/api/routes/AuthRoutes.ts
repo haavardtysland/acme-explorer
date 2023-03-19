@@ -7,6 +7,8 @@ export function AuthRoutes(app: Application) {
    * /api/v0/Actors/Login:
    *   post:
    *     summary: Login with a email and password.
+   *     tags:
+   *       - Authentication
    *     requestBody:
    *      required: true
    *      content:
@@ -46,6 +48,8 @@ export function AuthRoutes(app: Application) {
    * /api/v0/refresh-token:
    *   post:
    *     summary: Get refresh token if token is not valid anymore.
+   *     tags:
+   *       - Authentication
    *     responses:
    *       200:
    *         description: Success

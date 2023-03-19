@@ -30,6 +30,9 @@ export const login = async (req: Request, res: Response) => {
   }
 
   const valid: boolean = await compare(loginRequest.password, actor.password);
+  console.log(loginRequest.password);
+  console.log(actor.password);
+  console.log(valid);
   if (!valid) {
     const response: LoginResponse = {
       errorMsg: 'Wrong password',
