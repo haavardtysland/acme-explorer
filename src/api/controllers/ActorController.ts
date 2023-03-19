@@ -50,7 +50,6 @@ export const deleteActor = async (req: Request, res: Response) => {
 
   if (!isDeleted) {
     return res.status(404).send(`Did not find actor with id: ${actorId}`);
-    
   }
   return res.send('Actor successfully deleted');
 };
@@ -101,11 +100,10 @@ export const createManager = async (req: Request, res: Response) => {
 
 export const changeBannedStatus = async (req: Request, res: Response) => {
   const actorId: string = req.params.actorId;
-  const response: boolean | null = await ActorRepository.changeBannedStatus(
-    actorId
-  );
-  if (!response) {
-    return res.status(500).send('Did not mangage to change banned status');
+  const response: boolean | null | ErrorResponse =
+    await ActorRepository.changeBannedStatus(actorId);
+  if (isErrorResponse(response)) {
+    return res.send(404).send(response.errorMessage);
   }
   return res.send(response);
 };

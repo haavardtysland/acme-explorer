@@ -6,8 +6,13 @@ export interface IActorRepository {
   createActor: (actor: Actor) => Promise<Actor | ErrorResponse>;
   getActor: (actorId: string) => Promise<Actor | null>;
   getActors: () => Promise<Actor[]>;
-  updateActor: (actorId: string, actor: UpdateActorDto) => Promise<boolean>;
+  updateActor: (
+    actorId: string,
+    actor: UpdateActorDto
+  ) => Promise<boolean | ErrorResponse>;
   deleteActor: (actorId: string) => Promise<boolean>;
   getUserByEmail: (email: string) => Promise<Actor | null>;
-  changeBannedStatus: (actorId: string) => Promise<boolean | null>;
+  changeBannedStatus: (
+    actorId: string
+  ) => Promise<boolean | null | ErrorResponse>;
 }

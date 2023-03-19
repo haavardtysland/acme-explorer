@@ -28,6 +28,9 @@ export const login = async (req: Request, res: Response) => {
       .status(404)
       .send(`Could not find user with email: ${loginRequest.email}`);
   }
+  if (actor?.isBanned) {
+    return res.status(401).send('This user is banned');
+  }
 
   const valid: boolean = await compare(loginRequest.password, actor.password);
   if (!valid) {
