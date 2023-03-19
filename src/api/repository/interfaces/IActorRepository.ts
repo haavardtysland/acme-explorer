@@ -8,4 +8,5 @@ export interface IActorRepository {
   updateActor: (actorId: string, actor: Actor) => Promise<boolean>;
   deleteActor: (actorId: string) => Promise<boolean>;
   getUserByEmail: (email: string) => Promise<Actor | null>;
+  changeBannedStatus: (actorId: string) => Promise<boolean | null>;
 }

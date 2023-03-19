@@ -5,6 +5,7 @@ import {
   getActor,
   getActors,
   updateActor,
+  changeBannedStatus,
 } from '../controllers/ActorController';
 import { isAuthorized, verifyIdentity } from '../middlewares/AuthMiddleware';
 import { Role } from '../models/Actor';
@@ -211,4 +212,8 @@ export function ActorRoutes(app: Application) {
     .get(isAuthorized([Role.Administrator]), getActor)
     .put(verifyIdentity, updateActor)
     .delete(verifyIdentity, deleteActor);
+
+  app
+    .route('/api/v0/Actors/:actorId/Banned')
+    .put(isAuthorized([Role.Administrator]), changeBannedStatus);
 }

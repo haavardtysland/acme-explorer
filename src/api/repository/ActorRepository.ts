@@ -50,6 +50,17 @@ const getUserByEmail = async (email: string): Promise<Actor | null> => {
   return await ActorModel.findOne({ email: email });
 };
 
+const changeBannedStatus = async (actorId: string): Promise<boolean | null> => {
+  console.log(actorId);
+  return await ActorModel.findByIdAndUpdate(
+    { '_id:': actorId },
+    {
+      $set: { $isBanned: { isbanned: { $not: '$isBanned' } } },
+    },
+    { new: true }
+  );
+};
+
 export const ActorRepository: IActorRepository = {
   createActor,
   getActor,
@@ -57,4 +68,5 @@ export const ActorRepository: IActorRepository = {
   getActors,
   updateActor,
   getUserByEmail,
+  changeBannedStatus,
 };

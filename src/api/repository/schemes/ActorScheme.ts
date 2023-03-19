@@ -13,6 +13,7 @@ const ActorSchema = new mongoose.Schema({
   password: { type: String, required: true },
   phone: { type: String, required: false },
   address: { type: String, required: false },
+  isBanned: { type: Boolean, required: true },
 });
 
 export const ActorModel = mongoose.model<Actor>(

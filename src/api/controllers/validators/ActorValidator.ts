@@ -10,12 +10,13 @@ export const actorValidator: JSONSchemaType<Actor> = {
     email: { type: 'string', format: 'email' },
     phone: { type: 'string', nullable: true },
     address: { type: 'string', nullable: true },
+    isBanned: { type: 'boolean' },
     role: {
       type: ['string'],
       enum: ['ADMINISTRATOR', 'MANAGER', 'EXPLORER'] as Role[],
     },
     password: { type: 'string' },
   },
-  required: ['name', 'surname', 'email', 'password'],
+  required: ['name', 'surname', 'email', 'password', 'isBanned'],
   additionalProperties: false,
 };
