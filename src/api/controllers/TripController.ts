@@ -12,12 +12,7 @@ import { tripValidator } from './validators/TripValidator';
 import Validadtor from './validators/Validator';
 import fs from 'fs';
 import path from 'path';
-import { FinderType, finderValidator } from './validators/FinderValidator';
-import { FinderParameters } from '../models/FinderParameters';
-import {
-  ErrorResponse,
-  isErrorResponse,
-} from '../error_handling/ErrorResponse';
+
 
 export const getTrip = async (req: Request, res: Response) => {
   const tripId: string = req.params.tripId;
@@ -179,37 +174,4 @@ export const getSearchedTrips = async (req: Request, res: Response) => {
   res.status(200).send(trips);
 };
 
-export const findTrips = async (req: Request, res: Response) => {
-  //Searcher
-  const request = {
-    keyWord: req.query.keyWord,
-    fromPrice: req.query.fromPrice,
-    toPrice: req.query.toPrice,
-    fromDate: req.query.fromDate,
-    toDate: req.query.toDate,
-  };
 
-  const validate = Validadtor.compile<FinderType>(finderValidator);
-
-  if (!validate(request)) {
-    return res.status(400).send(validate.errors);
-  }
-
-  const finderParameters: FinderParameters = {
-    keyWord: request.keyWord,
-    fromPrice: Number(request.fromPrice),
-    toPrice: Number(request.toPrice),
-    fromDate: new Date(String(request.fromDate)),
-    toDate: new Date(String(request.toDate)),
-  };
-  const response: Trip[] | ErrorResponse = await TripRepository.findTrips(
-    finderParameters
-  );
-
-  if (isErrorResponse(response)) {
-    console.log('hore');
-    return res.status(500).send(response.errorMessage);
-  }
-
-  return res.status(200).send(response);
-};

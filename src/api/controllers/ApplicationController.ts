@@ -92,7 +92,7 @@ export const changeApplicationStatus = async (req: Request, res: Response) => {
       .send(`Could not find Application with Id: ${applicationId}`);
   }
 
-  res.status(200).send('noe annet skjedde');
+  return res.status(200).send('Application status was sucessfully updated');
 };
 
 export const payTrip = (req: Request, res: Response) => {
