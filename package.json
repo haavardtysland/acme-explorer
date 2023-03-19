@@ -7,7 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "ts-node src/index.ts",
     "dev": "nodemon src/index.ts",
-    "build": "tsc"
+    "build": "tsc",
+    "gatling": "./src/api/gatling/bin/gatling.sh",
+    "gatling-win": "./src/api/gatling/bin/gatling.bat"
   },
   "repository": {
     "type": "git",

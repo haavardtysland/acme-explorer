@@ -4,7 +4,6 @@ import {
   cancelTrip,
   createTrip,
   deleteTrip,
-  findTrips,
   getAppliedTrips,
   getSearchedTrips,
   getTrip,
@@ -175,6 +174,12 @@ export function TripRoutes(app: Application) {
    *    responses:
    *      200:
    *        description: Successful
+   *      400:
+   *        description: Bad Request
+   *      422:
+   *        description: Unprocessable Entity
+   *      403:
+   *        description: Forbidden
    *
    */
   app
@@ -505,6 +510,4 @@ export function TripRoutes(app: Application) {
    *         description: Bad request
    */
   app.route('/api/v0/Trips/Search/:searchWord').get(getSearchedTrips);
-
-  app.route('/api/v0/Finder').get(findTrips);
 }

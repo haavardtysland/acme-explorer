@@ -1,5 +1,4 @@
 import { Actor } from '../models/Actor';
-import { IActorRepository } from './interfaces/IActorRepository';
 import { ActorModel } from './schemes/ActorScheme';
 import { hash } from 'bcryptjs';
 import { Types } from 'mongoose';
@@ -8,6 +7,7 @@ import {
   createErrorResponse,
   ErrorResponse,
 } from '../error_handling/ErrorResponse';
+import { UpdateActorDto } from '../models/dtos/UpdateActorDto';
 dotenv.config();
 
 const createActor = async (actor: Actor): Promise<Actor | ErrorResponse> => {
@@ -31,19 +31,26 @@ const getActors = async (): Promise<Actor[]> => {
   return await ActorModel.find();
 };
 
-const updateActor = async (actorId: string, actor: Actor): Promise<boolean> => {
-  if (!Types.ObjectId.isValid(actorId)) {
-    return false;
-  }
+const updateActor = async (
+  actorId: string,
+  updateActorDto: UpdateActorDto
+): Promise<boolean | ErrorResponse> => {
+  try {
+    const doc = await ActorModel.findOne({ _id: actorId });
+    if (!doc) {
+      return false;
+    }
+    
+    if (updateActorDto.password) {
+      updateActorDto.password = await hash(updateActorDto.password, 8);
+    }
 
-  const doc = await ActorModel.findOne({ _id: actorId });
-  if (!doc) {
-    return false;
+    doc.set(updateActorDto);
+    await doc.save();
+    return true;
+  } catch (error) {
+    return createErrorResponse(error.message);
   }
-  
-  doc.overwrite(actor);
-  await doc.save();
-  return true;
 };
 
 const deleteActor = async (actorId: string): Promise<boolean> => {
@@ -59,7 +66,7 @@ const getUserByEmail = async (email: string): Promise<Actor | null> => {
   return await ActorModel.findOne({ email: email });
 };
 
-export const ActorRepository: IActorRepository = {
+export const ActorRepository = {
   createActor,
   getActor,
   deleteActor,

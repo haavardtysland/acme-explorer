@@ -1,3 +1,5 @@
+import { ActorFinder } from './ActorFinder';
+
 export enum Role {
   Administrator = 'ADMINISTRATOR',
   Manager = 'MANAGER',
@@ -13,4 +15,5 @@ export type Actor = {
   address?: string;
   role: Role;
   password: string;
+  finder: ActorFinder;
 };

@@ -88,6 +88,14 @@ export function ActorRoutes(app: Application) {
    *       200:
    *         description: Sucesss
    *
+   *     responses:
+   *       200:
+   *         description: Success
+   *       422:
+   *         description: Unprocessable Entity
+   *       400:
+   *         description: Bad Request
+   *
    */
   app.route('/api/v0/Actors').post(createActor);
 
