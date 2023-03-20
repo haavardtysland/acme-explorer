@@ -1,6 +1,6 @@
-import { Role } from '../models/Actor';
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { AccessTokenPaylod, verifyAcessToken } from '../auth/auth';
+import { Role } from '../models/Actor';
 
 export const isAuthorized = (permissions?: Role[]) => {
   return (req: Request, res: Response, next: NextFunction) => {

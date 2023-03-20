@@ -58,6 +58,13 @@ export function ApplicationRoutes(app: Application) {
    *     tags:
    *       - Applications
    *     description: Change status of an application application. Requires a token from a manager.
+   *     parameters:
+   *      - name: applicationId
+   *        in: path
+   *        required: true
+   *        description: The id of the application
+   *        schema:
+   *          type: string
    *     requestBody:
    *      required: true
    *      content:
@@ -67,7 +74,7 @@ export function ApplicationRoutes(app: Application) {
    *            properties:
    *              status:
    *                type: string
-   *                default: "ACCEPTED"
+   *                default: "DUE"
    *              description:
    *                type: string
    *                default:
@@ -82,18 +89,26 @@ export function ApplicationRoutes(app: Application) {
 
   /**
    * @swagger
-   * /api/v0/Trips/Applications/:applicationId/Pay:
+   * /api/v0/Trips/Applications/{applicationId}/Pay:
    *   post:
    *     security:
    *        - bearerAuth: []
-   *     summary: Create a new application.
+   *     summary: Pay for a trip.
    *     tags:
    *       - Applications
-   *     description: Pay for a trip. Requires a token from an account to show it is authenticated. Not implemented as it can be done through frontend.
+   *     description: Pay for a trip. Requires a token from an account to show it is authenticated and is trying to pay for its own application. Not implemented with the actual paypal payment as we were told this was not neccessary.
+   *     parameters:
+   *      - name: applicationId
+   *        in: path
+   *        required: true
+   *        description: The id of the application
+   *        schema:
+   *          type: string
    *     responses:
    *       200:
    *         description: Success
-   *
    */
-  app.route('/api/v0/Trips/Applications/:applicationId/Pay').post(payTrip);
+  app
+    .route('/api/v0/Trips/Applications/:applicationId/Pay')
+    .post(isAuthorized([Role.Explorer]), payTrip);
 }

@@ -5,6 +5,10 @@ import { Trip } from '../models/Trip';
 import { ApplicationRepository } from '../repository/ApplicationRepository';
 import { TripRepository } from '../repository/TripRepository';
 import {
+  ErrorResponse,
+  isErrorResponse,
+} from './../error_handling/ErrorResponse';
+import {
   applicationStatusValidator,
   applicationValidator,
 } from './validators/ApplicationValidator';
@@ -95,6 +99,15 @@ export const changeApplicationStatus = async (req: Request, res: Response) => {
   return res.status(200).send('Application status was sucessfully updated');
 };
 
-export const payTrip = (req: Request, res: Response) => {
-  res.status(501).send('Payment is not implemented');
+export const payTrip = async (req: Request, res: Response) => {
+  const applicationId: string = req.params.applicationId;
+  const actorId: string = res.locals.actorId;
+  const application: Application | ErrorResponse =
+    await ApplicationRepository.payTrip(applicationId, actorId);
+
+  if (isErrorResponse(application)) {
+    return res.status(400).send(application.errorMessage);
+  }
+
+  return res.send(application);
 };
