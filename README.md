@@ -32,8 +32,17 @@ In this section the results of the performance tests are presented with relevant
 
 ### Minimum number of concurrent users that cannot be supported by the scenarios
 
-TODO
+In our stress test of the API the system had 1958 concurrent users, with 1430 active administrators and 528 active customers/actors
+<img src="./assets/2000200Limit.png">
+When running this scenraios we had the 2000 injected rampUsers on both administrators and actors during 100 seconds.
 
 ### The maximum number of concurrent users that our scenarios supports having a proper performance
 
-TODO
+To find the maximum number of concurrent users that our scenarios supported having a proper preformance we testet different values of rampUsers during 100 seconds. We ended up with 1050 rampUsers for both administrator and actor. In the gatling report we can see that the number of concurrent/active users peaked on 114.
+<img src="./assets/ActiveUsers10501050.png">
+
+In the picture under we can see form the galting report that the global response time is less than 5 seconds and the global mean response time is less than 1 second.
+<img src="./assets/fulloverview10501050.png">
+
+The corresponding screen capture of the gatling report:
+<img src="./assets/gatlinReport10501050.png">
