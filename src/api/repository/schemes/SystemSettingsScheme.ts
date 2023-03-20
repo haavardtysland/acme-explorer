@@ -1,10 +1,10 @@
 import mongoose from 'mongoose';
-import { resourceLimits } from 'worker_threads';
 import { SystemSettings } from '../../models/SystemSettings';
 
 const SystemSettingsSchema = new mongoose.Schema({
+  name: { type: String },
   cachingTime: { type: Number },
-  resourceLimits: { type: Number },
+  resultLimit: { type: Number },
 });
 
 export const SystemSettingsModel = mongoose.model<SystemSettings>(
