@@ -50,7 +50,7 @@ export const createApplication = async (req: Request, res: Response) => {
   const createdApplication: Application | ErrorResponse =
     await ApplicationRepository.createApplication(application);
   if (isErrorResponse(createApplication)) {
-    res.send(500).send(createApplication.errorMessage);
+    res.send(createApplication.code).send(createApplication.errorMessage);
   }
   res.send(createdApplication);
 };
@@ -60,7 +60,7 @@ export const getApplicationsByTrip = async (req: Request, res: Response) => {
   const applications: Application[] | ErrorResponse =
     await ApplicationRepository.getApplicationsByTrip(tripId);
   if (isErrorResponse(applications)) {
-    res.status(404).send(applications.errorMessage);
+    res.status(applications.code).send(applications.errorMessage);
   }
   res.send(applications);
 };
@@ -92,7 +92,7 @@ export const changeApplicationStatus = async (req: Request, res: Response) => {
 
   if (isErrorResponse(application)) {
     return res
-      .status(404)
+      .status(application.code)
       .send(`Could not find Application with Id: ${applicationId}`);
   }
 
@@ -126,7 +126,7 @@ export const cancelApplication = async (req: Request, res: Response) => {
     );
 
   if (isErrorResponse(application)) {
-    return res.status(404).send(application.errorMessage);
+    return res.status(application.code).send(application.errorMessage);
   }
   return res.status(200).send('Application was sucessfully cancelled.');
 };
@@ -138,7 +138,7 @@ export const payTrip = async (req: Request, res: Response) => {
     await ApplicationRepository.payTrip(applicationId, actorId);
 
   if (isErrorResponse(application)) {
-    return res.status(400).send(application.errorMessage);
+    return res.status(application.code).send(application.errorMessage);
   }
 
   return res.send(application);
