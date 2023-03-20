@@ -239,7 +239,15 @@ export function ActorRoutes(app: Application) {
    *        schema:
    *          type: string
    *     requestBody:
-   *      required: false
+   *        required: true
+   *        content:
+   *          application/json:
+   *            schema:
+   *              type: object
+   *              properties:
+   *                isBanned:
+   *                  type: boolean
+   *                  default: true
    *     responses:
    *       200:
    *         description: Success
