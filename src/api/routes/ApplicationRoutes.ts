@@ -7,6 +7,7 @@ import {
 } from '../controllers/ApplicationController';
 import { isAuthorized } from '../middlewares/AuthMiddleware';
 import { Role } from '../models/Actor';
+import { cancelApplication } from './../controllers/ApplicationController';
 
 export function ApplicationRoutes(app: Application) {
   app.route('/api/v0/Trips/:tripId/Applications').get(getApplicationsByTrip);
@@ -86,6 +87,44 @@ export function ApplicationRoutes(app: Application) {
   app
     .route('/api/v0/Trips/Application/:applicationId/Status')
     .put(isAuthorized([Role.Manager]), changeApplicationStatus);
+
+  /**
+   * @swagger
+   * /api/v0/Trips/Applications/{applicationId}/Cancel:
+   *   post:
+   *     security:
+   *        - bearerAuth: []
+   *     summary: Cancel an accepted application.
+   *     tags:
+   *       - Applications
+   *     description: Cancel an accepted application. Requires a token from an account to show it is authenticated and is trying to cancel its own application.
+   *     parameters:
+   *      - name: applicationId
+   *        in: path
+   *        required: true
+   *        description: The id of the application
+   *        schema:
+   *          type: string
+   *     requestBody:
+   *      required: true
+   *      content:
+   *        application/json:
+   *          schema:
+   *            type: object
+   *            properties:
+   *              status:
+   *                type: string
+   *                default: "CANCELLED"
+   *              description:
+   *                type: string
+   *                default: "Could not go"
+   *     responses:
+   *       200:
+   *         description: Success
+   */
+  app
+    .route('/api/v0/Trips/Applications/:applicationId/Cancel')
+    .post(isAuthorized([Role.Explorer]), cancelApplication);
 
   /**
    * @swagger

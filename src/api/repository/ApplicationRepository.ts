@@ -1,4 +1,3 @@
-import { Types } from 'mongoose';
 import {
   createErrorResponse,
   ErrorResponse,
@@ -11,65 +10,120 @@ import { TripModel } from './schemes/TripScheme';
 
 const createApplication = async (
   application: Application
-): Promise<Application | null> => {
-  if (
-    !Types.ObjectId.isValid(application.tripId) ||
-    !Types.ObjectId.isValid(application.actorId)
-  ) {
-    return null;
-  }
-  const trip = await TripModel.findById(application.tripId);
-  const update = { $push: { applications: application } };
+): Promise<Application | ErrorResponse> => {
+  try {
+    const trip = await TripModel.findById(application.tripId);
+    const update = { $push: { applications: application } };
 
-  if (trip === null) {
-    return null;
-  }
+    if (trip === null) {
+      return createErrorResponse(
+        `Could not find trip with tripId ${application.tripId}`
+      );
+    }
 
-  await trip.updateOne(update);
-  return application;
+    await trip.updateOne(update);
+    return application;
+  } catch (error) {
+    return createErrorResponse(error.message);
+  }
 };
 
 const getApplicationsByTrip = async (
   tripId: string
-): Promise<Application[] | null> => {
-  if (!Types.ObjectId.isValid(tripId)) {
-    return null;
+): Promise<Application[] | ErrorResponse> => {
+  try {
+    const trip = await TripModel.findById(tripId);
+    if (trip === null) {
+      return createErrorResponse(`Could not find trip with tripId ${tripId}`);
+    }
+    return trip.applications;
+  } catch (error) {
+    return createErrorResponse(error.message);
   }
-  const trip = await TripModel.findById(tripId);
-  if (trip === null) {
-    return null;
-  }
-
-  return trip.applications;
 };
 
 const updateApplicationStatus = async (
   applicationId: string,
   applicationStatus: ApplicationStatus
-): Promise<ApplicationStatus | null> => {
-  if (!Types.ObjectId.isValid(applicationId)) {
-    return null;
-  }
-
-  const trip = await TripModel.findOneAndUpdate(
-    {
-      'applications._id': applicationId,
-    },
-    {
-      $set: {
-        'applications.$.status': {
-          status: applicationStatus.status,
-          description: applicationStatus.description,
-        },
+): Promise<ApplicationStatus | ErrorResponse> => {
+  try {
+    const trip = await TripModel.findOneAndUpdate(
+      {
+        'applications._id': applicationId,
       },
+      {
+        $set: {
+          'applications.$.status': {
+            status: applicationStatus.status,
+            description: applicationStatus.description,
+          },
+        },
+      }
+    );
+
+    if (!trip) {
+      return createErrorResponse(
+        `Could not find trip with applicationId ${applicationId}`
+      );
     }
-  );
 
-  if (!trip) {
-    return null;
+    return applicationStatus;
+  } catch (error) {
+    return createErrorResponse(error.message);
   }
+};
 
-  return applicationStatus;
+const cancelApplication = async (
+  applicationId: string,
+  actorId: string,
+  applicationStatus: ApplicationStatus
+): Promise<ApplicationStatus | ErrorResponse> => {
+  try {
+    const applicationFind: Trip | null = await TripModel.findOne(
+      {},
+      { applications: { $elemMatch: { _id: applicationId } } }
+    );
+
+    if (!applicationFind) {
+      return createErrorResponse('No application found.');
+    }
+
+    const application: Application = applicationFind.applications[0];
+
+    if (!application) {
+      return createErrorResponse('No application found.');
+    }
+
+    if (application.status.status != AStatus.Accepted) {
+      return createErrorResponse(
+        'Cannot cancelled application where status is not ACCEPTED'
+      );
+    }
+
+    if (application.actorId != actorId) {
+      return createErrorResponse('Needs to be authorized as the actor ');
+    }
+
+    const trip = await TripModel.findOneAndUpdate(
+      {
+        'applications._id': applicationId,
+      },
+      {
+        $set: {
+          'applications.$.status': {
+            status: applicationStatus.status,
+            description: applicationStatus.description,
+          },
+        },
+      }
+    );
+    if (!trip) {
+      return createErrorResponse('No application found');
+    }
+    return applicationStatus;
+  } catch (error) {
+    return createErrorResponse(error.message);
+  }
 };
 
 const payTrip = async (
@@ -96,7 +150,7 @@ const payTrip = async (
       return createErrorResponse('Needs to be authorized as the actor ');
     }
 
-    if (application.status.status != AStatus.Due){
+    if (application.status.status != AStatus.Due) {
       return createErrorResponse('ApplicationStatus needs to be DUE');
     }
 
@@ -129,5 +183,6 @@ export const ApplicationRepository = {
   createApplication,
   getApplicationsByTrip,
   updateApplicationStatus,
+  cancelApplication,
   payTrip,
 };
