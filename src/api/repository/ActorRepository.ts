@@ -1,7 +1,6 @@
 import { Actor } from '../models/Actor';
 import { ActorModel } from './schemes/ActorScheme';
 import { hash } from 'bcryptjs';
-import { Types } from 'mongoose';
 import dotenv from 'dotenv';
 import {
   createErrorResponse,
@@ -15,21 +14,40 @@ const createActor = async (actor: Actor): Promise<Actor | ErrorResponse> => {
   actor.password = await hash(actor.password, 8);
   try {
     const res: Actor = await ActorModel.create(actor);
+    if (!res) {
+      return createErrorResponse('Could not create actor', 500);
+    }
     return res;
   } catch (error) {
     return createErrorResponse(error.message);
   }
 };
 
-const getActor = async (actorId: string): Promise<Actor | null> => {
-  if (!Types.ObjectId.isValid(actorId)) {
-    return null;
+const getActor = async (actorId: string): Promise<Actor | ErrorResponse> => {
+  try {
+    const actor: Actor | null = await ActorModel.findById(actorId);
+    if (!actor) {
+      return createErrorResponse(
+        `Could not find actor with id: ${actorId}`,
+        404
+      );
+    }
+    return actor;
+  } catch (error) {
+    return createErrorResponse(error.message);
   }
-  return await ActorModel.findById(actorId);
 };
 
-const getActors = async (): Promise<Actor[]> => {
-  return await ActorModel.find();
+const getActors = async (): Promise<Actor[] | ErrorResponse> => {
+  try {
+    const actors: Actor[] | null = await ActorModel.find();
+    if (!actors) {
+      return createErrorResponse(`Could not find list of actors`, 404);
+    }
+    return actors;
+  } catch (error) {
+    return createErrorResponse(error.message);
+  }
 };
 
 const updateActor = async (
@@ -54,30 +72,58 @@ const updateActor = async (
   }
 };
 
-const deleteActor = async (actorId: string): Promise<boolean> => {
-  if (!Types.ObjectId.isValid(actorId)) {
-    return false;
+const deleteActor = async (
+  actorId: string
+): Promise<boolean | ErrorResponse> => {
+  try {
+    const response = await ActorModel.deleteOne({ _id: actorId });
+    if (response.deletedCount <= 0) {
+      return createErrorResponse(
+        `Could not find actor with actorId ${actorId}`,
+        404
+      );
+    }
+    return response.deletedCount > 0;
+  } catch (error) {
+    return createErrorResponse(error.message);
   }
-
-  const res = await ActorModel.deleteOne({ _id: actorId });
-  return res.deletedCount > 0;
 };
 
-const getUserByEmail = async (email: string): Promise<Actor | null> => {
-  return await ActorModel.findOne({ email: email });
+const getUserByEmail = async (
+  email: string
+): Promise<Actor | ErrorResponse> => {
+  try {
+    const actor: Actor | null = await ActorModel.findOne({ email: email });
+    if (!actor) {
+      return createErrorResponse(
+        `Could not find actor with email ${email} `,
+        404
+      );
+    }
+    return actor;
+  } catch (error) {
+    return createErrorResponse(error.message);
+  }
 };
 
 const changeBannedStatus = async (
   actorId: string,
   isBanned: boolean
-): Promise<boolean | null | ErrorResponse> => {
+): Promise<boolean | ErrorResponse> => {
   try {
-    return await ActorModel.findOneAndUpdate(
+    const response: boolean | null = await ActorModel.findOneAndUpdate(
       { _id: actorId },
 
       [{ $set: { isBanned: isBanned } }],
       { new: true }
     );
+    if (!response) {
+      return createErrorResponse(
+        `Could not find actor with actorId ${actorId}`,
+        404
+      );
+    }
+    return response;
   } catch (err) {
     return createErrorResponse(err.message);
   }
