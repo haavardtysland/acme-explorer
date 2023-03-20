@@ -1,21 +1,21 @@
-import { Request, response, Response } from 'express';
-import { Picture } from '../models/Picture';
-import { Application } from '../models/Application';
-import { Stage } from '../models/Stage';
-import { Ticker } from '../models/Ticker';
-import { Trip } from '../models/Trip';
-import { TStatus } from '../models/TripStatus';
-import { ModifyTripResponse } from '../models/dtos/ModifyTripResponse';
-import { TripRepository } from '../repository/TripRepository';
-import { tripValidator, updateTripValidator } from './validators/TripValidator';
-import Validadtor from './validators/Validator';
+import { Request, Response } from 'express';
 import fs from 'fs';
 import path from 'path';
-import { UpdateTripDto } from '../models/dtos/UpdateTripDto';
 import {
   ErrorResponse,
   isErrorResponse,
 } from '../error_handling/ErrorResponse';
+import { Application } from '../models/Application';
+import { ModifyTripResponse } from '../models/dtos/ModifyTripResponse';
+import { UpdateTripDto } from '../models/dtos/UpdateTripDto';
+import { Picture } from '../models/Picture';
+import { Stage } from '../models/Stage';
+import { Ticker } from '../models/Ticker';
+import { Trip } from '../models/Trip';
+import { TStatus } from '../models/TripStatus';
+import { TripRepository } from '../repository/TripRepository';
+import { tripValidator, updateTripValidator } from './validators/TripValidator';
+import Validadtor from './validators/Validator';
 
 export const getTrip = async (req: Request, res: Response) => {
   const tripId: string = req.params.tripId;
@@ -39,6 +39,11 @@ export const updateTrip = async (req: Request, res: Response) => {
   const tripId: string = req.params.tripId;
   const managerId = res.locals.actorId;
   const validate = Validadtor.compile<UpdateTripDto>(updateTripValidator);
+
+  if (trip.stages == null && trip.requirements == null) {
+    trip.stages = JSON.parse(req.body.stages);
+    trip.requirements = JSON.parse(req.body.requirements);
+  }
 
   if (!validate(trip)) {
     return res.status(422).send(validate.errors);
@@ -167,9 +172,8 @@ export const getTripsByManager = async (req: Request, res: Response) => {
 
 export const getSearchedTrips = async (req: Request, res: Response) => {
   const searchWord = req.params.searchWord;
-  const response: Trip[] | ErrorResponse = await TripRepository.getSearchedTrips(
-    searchWord
-  );
+  const response: Trip[] | ErrorResponse =
+    await TripRepository.getSearchedTrips(searchWord);
 
   if (isErrorResponse(response)) {
     return res.status(response.code).send(response.errorMessage);
