@@ -47,7 +47,7 @@ export function ApplicationRoutes(app: Application) {
    */
   app
     .route('/api/v0/Trips/Applications')
-    .post(isAuthorized(), createApplication);
+    .post(isAuthorized([Role.Explorer]), createApplication);
 
   /**
    * @swagger

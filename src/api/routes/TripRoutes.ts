@@ -499,7 +499,7 @@ export function TripRoutes(app: Application) {
 
   /**
    * @swagger
-   * /api/v0/Managers/{managerId}Trips:
+   * /api/v0/Managers/{managerId}/Trips:
    *   get:
    *    summary: Get all trips created by a given manager.
    *    security:
@@ -604,7 +604,7 @@ export function TripRoutes(app: Application) {
    *      - Trips
    *    description: Get all trips that have been have a match in either ticker, title or description .
    *    parameters:
-   *      - name: searchword
+   *      - name: searchWord
    *        in: path
    *        required: true
    *        description: The word you want to search for

@@ -16,6 +16,7 @@ import Validator from './validators/Validator';
 
 export const createApplication = async (req: Request, res: Response) => {
   const application: Application = req.body;
+  application.actorId = res.locals.actorId;
   application.dateCreated = new Date().toISOString().substring(0, 10);
   application.status = {
     description: 'Waiting for payment',
@@ -28,11 +29,11 @@ export const createApplication = async (req: Request, res: Response) => {
     return res.status(422).send(validate.errors);
   }
 
-  const trip: Trip | null = await TripRepository.getTrip(application.tripId);
-  if (!trip) {
-    return res
-      .send(404)
-      .send('The trip you are trying to apply to does not exist');
+  const trip: Trip | ErrorResponse = await TripRepository.getTrip(
+    application.tripId
+  );
+  if (isErrorResponse(trip)) {
+    return res.status(trip.code).send(trip.errorMessage);
   }
 
   if (!trip.isPublished) {
