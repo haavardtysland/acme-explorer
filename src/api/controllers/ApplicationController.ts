@@ -12,6 +12,7 @@ import Validator from './validators/Validator';
 
 export const createApplication = async (req: Request, res: Response) => {
   const application: Application = req.body;
+  application.actorId = res.locals.actorId;
   application.dateCreated = new Date().toISOString().substring(0, 10);
   application.status = {
     description: 'Waiting for payment',
