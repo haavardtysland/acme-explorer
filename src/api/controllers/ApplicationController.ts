@@ -50,9 +50,9 @@ export const createApplication = async (req: Request, res: Response) => {
   const createdApplication: Application | ErrorResponse =
     await ApplicationRepository.createApplication(application);
   if (isErrorResponse(createApplication)) {
-    res.send(createApplication.code).send(createApplication.errorMessage);
+    return res.send(createApplication.code).send(createApplication.errorMessage);
   }
-  res.send(createdApplication);
+  return res.send(createdApplication);
 };
 
 export const getApplicationsByTrip = async (req: Request, res: Response) => {
@@ -60,9 +60,9 @@ export const getApplicationsByTrip = async (req: Request, res: Response) => {
   const applications: Application[] | ErrorResponse =
     await ApplicationRepository.getApplicationsByTrip(tripId);
   if (isErrorResponse(applications)) {
-    res.status(applications.code).send(applications.errorMessage);
+    return res.status(applications.code).send(applications.errorMessage);
   }
-  res.send(applications);
+  return res.send(applications);
 };
 
 export const changeApplicationStatus = async (req: Request, res: Response) => {
