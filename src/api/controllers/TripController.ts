@@ -6,7 +6,7 @@ import { Stage } from '../models/Stage';
 import { Ticker } from '../models/Ticker';
 import { Trip } from '../models/Trip';
 import { TStatus } from '../models/TripStatus';
-import { ModifyTripResponse } from '../models/dtos/TripModels';
+import { ModifyTripResponse } from '../models/dtos/ModifyTripResponse';
 import { TripRepository } from '../repository/TripRepository';
 import { tripValidator, updateTripValidator } from './validators/TripValidator';
 import Validadtor from './validators/Validator';

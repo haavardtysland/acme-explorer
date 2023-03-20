@@ -10,6 +10,9 @@ import { FinderRepository } from '../repository/FinderRepository';
 import { Trip } from '../models/Trip';
 import { ActorFinder } from '../models/ActorFinder';
 import { actorFinderValidator } from './validators/ActorValidator';
+import NodeCache from 'node-cache';
+
+const cache = new NodeCache({ stdTTL: 60 * 60, checkperiod: 120 });
 
 export const updateFinder = async (req: Request, res: Response) => {
   const actorId = res.locals.actorId;
@@ -31,6 +34,11 @@ export const updateFinder = async (req: Request, res: Response) => {
 };
 
 export const findTrips = async (req: Request, res: Response) => {
+  const key = req.originalUrl;
+  if (cache.has(key)) {
+    console.log('got data from cache');
+    return res.status(200).send(cache.get(key));
+  }
   //Searcher
   const request = {
     keyWord: req.query.keyWord,
@@ -61,6 +69,7 @@ export const findTrips = async (req: Request, res: Response) => {
   if (isErrorResponse(response)) {
     return res.status(500).send(response.errorMessage);
   }
-
+  cache.set(key, response);
+  console.log('put data into cache');
   return res.status(200).send(response);
 };
