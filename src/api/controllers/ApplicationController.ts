@@ -19,7 +19,7 @@ export const createApplication = async (req: Request, res: Response) => {
   application.actorId = res.locals.actorId;
   application.dateCreated = new Date().toISOString().substring(0, 10);
   application.status = {
-    description: 'Waiting for payment',
+    description: 'Waiting for manager to update status.',
     status: AStatus.Pending,
   };
 
