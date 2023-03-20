@@ -379,7 +379,7 @@ export function TripRoutes(app: Application) {
 
   /**
    * @swagger
-   * /api/v0/Trips/{tripId}/Status:
+   *  /api/v0/Trips/{tripId}/Status:
    *   put:
    *    security:
    *      - bearerAuth: []
@@ -400,7 +400,7 @@ export function TripRoutes(app: Application) {
    *
    */
   app
-    .route('api/v0/Trips/:tripId/Status')
+    .route('/api/v0/Trips/:tripId/Status')
     .put(isAuthorized([Role.Manager]), cancelTrip);
 
   /**
@@ -411,6 +411,13 @@ export function TripRoutes(app: Application) {
    *    tags:
    *      - Trips
    *    description: Get all trips an actor has applied for.
+   *    parameters:
+   *      - name: actorId
+   *        in: path
+   *        required: true
+   *        description: The id of the actor
+   *        schema:
+   *          type: string
    *    responses:
    *       200:
    *         description: Success
@@ -507,6 +514,13 @@ export function TripRoutes(app: Application) {
    *    tags:
    *      - Trips
    *    description: Get all trips created by a given manager. Needs token that confirms requester is a manager and is allowed to retrieve the information.
+   *    parameters:
+   *      - name: managerId
+   *        in: path
+   *        required: true
+   *        description: The id of the manager.
+   *        schema:
+   *          type: string
    *    responses:
    *       200:
    *         description: Success

@@ -87,6 +87,7 @@ export const createActor = async (req: Request, res: Response) => {
 export const createManager = async (req: Request, res: Response) => {
   const actor: Actor = req.body;
   actor.role = Role.Manager;
+  actor.isBanned = false;
   const validate = Validator.compile<Actor>(actorValidator);
 
   if (!validate(actor)) {
@@ -96,8 +97,9 @@ export const createManager = async (req: Request, res: Response) => {
   const response: Actor | ErrorResponse = await ActorRepository.createActor(
     actor
   );
+
   if (isErrorResponse(response)) {
-    return res.send(response.code).send(response.errorMessage);
+    return res.status(response.code).send(response.errorMessage);
   }
   return res.send(response);
 };

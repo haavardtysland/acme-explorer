@@ -13,6 +13,13 @@ export function createErrorResponse(
   };
 }
 
-export function isErrorResponse(arg: any): arg is ErrorResponse {
-  return typeof arg === 'object' && arg !== null && 'errorMessage' in arg;
+export function isErrorResponse(obj: any): obj is ErrorResponse {
+  return (
+    typeof obj == 'object' &&
+    obj !== null &&
+    'errorMessage' in obj &&
+    'code' in obj &&
+    typeof obj.errorMessage === 'string' &&
+    typeof obj.code === 'number'
+  );
 }

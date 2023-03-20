@@ -1,20 +1,35 @@
 import { Types } from 'mongoose';
-import { Trip } from '../models/Trip';
-import { AStatus } from './../models/ApplicationStatus';
-import { TStatus } from './../models/TripStatus';
-import { ModifyTripResponse } from '../models/dtos/ModifyTripResponse';
-import { TripModel } from './schemes/TripScheme';
-import { UpdateTripDto } from '../models/dtos/UpdateTripDto';
 import {
   createErrorResponse,
   ErrorResponse,
 } from '../error_handling/ErrorResponse';
+import { ModifyTripResponse } from '../models/dtos/ModifyTripResponse';
+import { UpdateTripDto } from '../models/dtos/UpdateTripDto';
+import { Trip } from '../models/Trip';
+import { AStatus } from './../models/ApplicationStatus';
+import { TStatus } from './../models/TripStatus';
+import { TripModel } from './schemes/TripScheme';
 
 const cancelTrip = async (
   tripId: string,
   managerId: string
 ): Promise<ModifyTripResponse> => {
+  if (!Types.ObjectId.isValid(tripId)) {
+    return {
+      statusCode: 404,
+      message: `Could not find Trip with Id: ${tripId}`,
+      isModified: false,
+    };
+  }
   const doc = await TripModel.findById(tripId);
+
+  if (!doc) {
+    return {
+      statusCode: 404,
+      message: `Could not find Trip with Id: ${tripId}`,
+      isModified: false,
+    };
+  }
 
   const response: ModifyTripResponse | null = canTripBeCancelled(
     tripId,
@@ -26,15 +41,7 @@ const cancelTrip = async (
     return response;
   }
 
-  if (!doc) {
-    return {
-      statusCode: 404,
-      message: `Could not find Trip with Id: ${tripId}`,
-      isModified: false,
-    };
-  }
-
-  doc.overwrite({
+  doc.set({
     status: { status: TStatus.Cancelled, description: 'Trip is cancelled' },
   });
 
@@ -176,7 +183,7 @@ const canTripBeCancelled = (
   }
   const today: Date = new Date();
 
-  if (trip.startDate >= today) {
+  if (trip.startDate <= today) {
     return {
       isModified: false,
       message: 'You cannot cancel the trip as it has already started',

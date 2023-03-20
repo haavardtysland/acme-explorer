@@ -32,26 +32,18 @@ export const createApplication = async (req: Request, res: Response) => {
   const trip: Trip | ErrorResponse = await TripRepository.getTrip(
     application.tripId
   );
+
   if (isErrorResponse(trip)) {
     return res.status(trip.code).send(trip.errorMessage);
   }
 
-  if (!trip.isPublished) {
-    return res
-      .status(400)
-      .send('You cannot apply for a Trip that is not published');
-  }
-
-  if (application.dateCreated < trip.startDate) {
-    return res
-      .status(400)
-      .send('You cannot apply for a Trip that already has started');
-  }
-
   const createdApplication: Application | ErrorResponse =
     await ApplicationRepository.createApplication(application);
+
   if (isErrorResponse(createApplication)) {
-    return res.send(createApplication.code).send(createApplication.errorMessage);
+    return res
+      .status(createApplication.code)
+      .send(createApplication.errorMessage);
   }
   return res.send(createdApplication);
 };

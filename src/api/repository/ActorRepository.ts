@@ -7,7 +7,6 @@ import {
   ErrorResponse,
 } from '../error_handling/ErrorResponse';
 import { UpdateActorDto } from '../models/dtos/UpdateActorDto';
-import { IActorRepository } from './interfaces/IActorRepository';
 dotenv.config();
 
 const createActor = async (actor: Actor): Promise<Actor | ErrorResponse> => {
@@ -129,7 +128,7 @@ const changeBannedStatus = async (
   }
 };
 
-export const ActorRepository: IActorRepository = {
+export const ActorRepository  = {
   createActor,
   getActor,
   deleteActor,

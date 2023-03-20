@@ -6,6 +6,7 @@ import { Application } from '../models/Application';
 import { ApplicationStatus } from '../models/ApplicationStatus';
 import { Trip } from '../models/Trip';
 import { AStatus } from './../models/ApplicationStatus';
+import { TStatus } from './../models/TripStatus';
 import { TripModel } from './schemes/TripScheme';
 
 const createApplication = async (
@@ -18,6 +19,20 @@ const createApplication = async (
     if (trip === null) {
       return createErrorResponse(
         `Could not find trip with tripId ${application.tripId}`
+      );
+    }
+
+    if (!trip.isPublished || trip.status.status == TStatus.Cancelled) {
+      return createErrorResponse(
+        'You cannot apply for a Trip that is not published or is cancelled',
+        405
+      );
+    }
+
+    if (application.dateCreated < trip.startDate) {
+      return createErrorResponse(
+        'You cannot apply for a Trip that already has started',
+        405
       );
     }
 

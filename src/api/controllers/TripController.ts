@@ -40,11 +40,6 @@ export const updateTrip = async (req: Request, res: Response) => {
   const managerId = res.locals.actorId;
   const validate = Validadtor.compile<UpdateTripDto>(updateTripValidator);
 
-  if (trip.stages == null && trip.requirements == null) {
-    trip.stages = JSON.parse(req.body.stages);
-    trip.requirements = JSON.parse(req.body.requirements);
-  }
-
   if (!validate(trip)) {
     return res.status(422).send(validate.errors);
   }
