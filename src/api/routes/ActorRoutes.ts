@@ -244,7 +244,7 @@ export function ActorRoutes(app: Application) {
 
   /**
    * @swagger
-   * /api/v0/Actors/{actorId}/Banned:
+   * /api/v0/Actors/{actorId}/isBanned:
    *   put:
    *     security:
    *        - bearerAuth: []
@@ -275,6 +275,6 @@ export function ActorRoutes(app: Application) {
    *
    */
   app
-    .route('/api/v0/Actors/:actorId/Banned')
+    .route('/api/v0/Actors/:actorId/isBanned')
     .put(isAuthorized([Role.Administrator]), changeBannedStatus);
 }

@@ -51,7 +51,7 @@ export function FinderRoutes(app: Application) {
    *    summary: Get all based on finder.
    *    tags:
    *      - Finder
-   *    description: Get all based on finder. Actor needs to be authenticated as an explorer.
+   *    description: Get all based on finder. Actor needs to be authenticated as an explorer. Parameters dont work in Swagger. Try this endpoint in postman. 
    *    parameters:
    *      - name: keyWord
    *        in: path
