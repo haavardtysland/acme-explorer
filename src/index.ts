@@ -9,11 +9,13 @@ import { initMongoDBConnection } from './api/config/moongose';
 import { ActorRoutes } from './api/routes/ActorRoutes';
 import { AuthRoutes } from './api/routes/AuthRoutes';
 import { ApplicationRoutes } from './api/routes/ApplicationRoutes';
+import { FinderRoutes } from './api/routes/FinderRoutes';
+import { SystemSettingsRoutes } from './api/routes/SystemSettingsRoutes';
 
 dotenv.config();
 
 export const app: Application = express();
-const port = process.env.PORT;
+const port = process.env.PORT || 8080;
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -29,6 +31,8 @@ AuthRoutes(app);
 ActorRoutes(app);
 TripRoutes(app);
 ApplicationRoutes(app);
+FinderRoutes(app);
+SystemSettingsRoutes(app);
 
 (async () => {
   try {

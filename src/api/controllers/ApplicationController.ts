@@ -5,6 +5,10 @@ import { Trip } from '../models/Trip';
 import { ApplicationRepository } from '../repository/ApplicationRepository';
 import { TripRepository } from '../repository/TripRepository';
 import {
+  ErrorResponse,
+  isErrorResponse,
+} from './../error_handling/ErrorResponse';
+import {
   applicationStatusValidator,
   applicationValidator,
 } from './validators/ApplicationValidator';
@@ -12,9 +16,10 @@ import Validator from './validators/Validator';
 
 export const createApplication = async (req: Request, res: Response) => {
   const application: Application = req.body;
+  application.actorId = res.locals.actorId;
   application.dateCreated = new Date().toISOString().substring(0, 10);
   application.status = {
-    description: 'Waiting for payment',
+    description: 'Waiting for manager to update status.',
     status: AStatus.Pending,
   };
 
@@ -24,41 +29,33 @@ export const createApplication = async (req: Request, res: Response) => {
     return res.status(422).send(validate.errors);
   }
 
-  const trip: Trip | null = await TripRepository.getTrip(application.tripId);
-  if (!trip) {
-    return res
-      .send(404)
-      .send('The trip you are trying to apply to does not exist');
+  const trip: Trip | ErrorResponse = await TripRepository.getTrip(
+    application.tripId
+  );
+
+  if (isErrorResponse(trip)) {
+    return res.status(trip.code).send(trip.errorMessage);
   }
 
-  if (!trip.isPublished) {
-    return res
-      .status(400)
-      .send('You cannot apply for a Trip that is not published');
-  }
-
-  if (application.dateCreated < trip.startDate) {
-    return res
-      .status(400)
-      .send('You cannot apply for a Trip that already has started');
-  }
-
-  const createdApplication: Application | null =
+  const createdApplication: Application | ErrorResponse =
     await ApplicationRepository.createApplication(application);
-  if (!createApplication) {
-    res.send(500).send('Did not manage to submit application');
+
+  if (isErrorResponse(createApplication)) {
+    return res
+      .status(createApplication.code)
+      .send(createApplication.errorMessage);
   }
-  res.send(createdApplication);
+  return res.send(createdApplication);
 };
 
 export const getApplicationsByTrip = async (req: Request, res: Response) => {
   const tripId = req.params.tripId;
-  const applications: Application[] | null =
+  const applications: Application[] | ErrorResponse =
     await ApplicationRepository.getApplicationsByTrip(tripId);
-  if (!applications) {
-    res.status(404);
+  if (isErrorResponse(applications)) {
+    return res.status(applications.code).send(applications.errorMessage);
   }
-  res.send(applications);
+  return res.send(applications);
 };
 
 export const changeApplicationStatus = async (req: Request, res: Response) => {
@@ -80,21 +77,62 @@ export const changeApplicationStatus = async (req: Request, res: Response) => {
     return res.status(422).send('Status need to be either REJECTED or DUE');
   }
 
-  const application: ApplicationStatus | null =
+  const application: ApplicationStatus | ErrorResponse =
     await ApplicationRepository.updateApplicationStatus(
       applicationId,
       applicationStatus
     );
 
-  if (!application) {
+  if (isErrorResponse(application)) {
     return res
-      .status(404)
+      .status(application.code)
       .send(`Could not find Application with Id: ${applicationId}`);
   }
 
-  res.status(200).send('noe annet skjedde');
+  return res.status(200).send('Application status was sucessfully updated');
 };
 
-export const payTrip = (req: Request, res: Response) => {
-  res.status(501).send('Payment is not implemented');
+export const cancelApplication = async (req: Request, res: Response) => {
+  const applicationId: string = req.params.applicationId;
+  const actorId: string = res.locals.actorId;
+  const applicationStatus: ApplicationStatus = req.body;
+
+  const validate = Validator.compile<ApplicationStatus>(
+    applicationStatusValidator
+  );
+
+  if (!validate(applicationStatus)) {
+    return res.status(422).send(validate.errors);
+  }
+
+  const isCancelled: boolean = applicationStatus.status == AStatus.Cancelled;
+
+  if (!isCancelled) {
+    return res.status(422).send('Status need to be CANCELLED');
+  }
+
+  const application: ApplicationStatus | ErrorResponse =
+    await ApplicationRepository.cancelApplication(
+      applicationId,
+      actorId,
+      applicationStatus
+    );
+
+  if (isErrorResponse(application)) {
+    return res.status(application.code).send(application.errorMessage);
+  }
+  return res.status(200).send('Application was sucessfully cancelled.');
+};
+
+export const payTrip = async (req: Request, res: Response) => {
+  const applicationId: string = req.params.applicationId;
+  const actorId: string = res.locals.actorId;
+  const application: Application | ErrorResponse =
+    await ApplicationRepository.payTrip(applicationId, actorId);
+
+  if (isErrorResponse(application)) {
+    return res.status(application.code).send(application.errorMessage);
+  }
+
+  return res.send(application);
 };

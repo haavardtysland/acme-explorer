@@ -8,6 +8,10 @@ import {
   RefreshTokenPayload,
   verifyAcessToken,
 } from '../auth/auth';
+import {
+  ErrorResponse,
+  isErrorResponse,
+} from '../error_handling/ErrorResponse';
 import { Actor } from '../models/Actor';
 import { ActorRepository } from '../repository/ActorRepository';
 import { loginValidator } from './validators/LoginValidator';
@@ -22,11 +26,17 @@ export const login = async (req: Request, res: Response) => {
   }
 
   const actor = await ActorRepository.getUserByEmail(loginRequest.email);
+  if (isErrorResponse(actor)) {
+    return res.status(500).send(actor.errorMessage);
+  }
 
   if (!actor) {
     return res
       .status(404)
       .send(`Could not find user with email: ${loginRequest.email}`);
+  }
+  if (actor?.isBanned) {
+    return res.status(401).send('This user is banned');
   }
 
   const valid: boolean = await compare(loginRequest.password, actor.password);
@@ -56,10 +66,15 @@ export const useRefreshToken = async (req: Request, res: Response) => {
     return res.send(401).send('User is not authenticated.');
   }
 
-  const actor: Actor | null = await ActorRepository.getActor(payload.id);
+  const actor: Actor | null | ErrorResponse = await ActorRepository.getActor(
+    payload.id
+  );
 
   if (actor == null) {
     return res.status(404).send(`Cannot find User with _id: ${payload.id}`);
+  }
+  if (isErrorResponse(actor)) {
+    return res.status(500).send(actor.errorMessage);
   }
 
   res.cookie('rt', createRefreshToken(actor._id), {

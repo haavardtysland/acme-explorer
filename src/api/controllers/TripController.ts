@@ -1,52 +1,56 @@
 import { Request, Response } from 'express';
-import { stringify } from 'querystring';
-import { Picture } from '../models/Picture';
+import fs from 'fs';
+import path from 'path';
+import {
+  ErrorResponse,
+  isErrorResponse,
+} from '../error_handling/ErrorResponse';
 import { Application } from '../models/Application';
+import { ModifyTripResponse } from '../models/dtos/ModifyTripResponse';
+import { UpdateTripDto } from '../models/dtos/UpdateTripDto';
+import { Picture } from '../models/Picture';
 import { Stage } from '../models/Stage';
 import { Ticker } from '../models/Ticker';
 import { Trip } from '../models/Trip';
 import { TStatus } from '../models/TripStatus';
-import { ModifyTripResponse } from '../repository/dtos/TripModels';
 import { TripRepository } from '../repository/TripRepository';
-import { tripValidator } from './validators/TripValidator';
+import { tripValidator, updateTripValidator } from './validators/TripValidator';
 import Validadtor from './validators/Validator';
-import fs from 'fs';
-import path from 'path';
 
 export const getTrip = async (req: Request, res: Response) => {
   const tripId: string = req.params.tripId;
-  const trip: Trip | null = await TripRepository.getTrip(tripId);
-  if (!trip) {
-    return res.status(404).send(`Trip with id: ${tripId} could not be found`);
+  const response: Trip | ErrorResponse = await TripRepository.getTrip(tripId);
+  if (isErrorResponse(response)) {
+    return res.status(response.code).send(response.errorMessage);
   }
-  res.send(trip);
+  return res.send(response);
 };
 
 export const getTrips = async (req: Request, res: Response) => {
-  const trips: Trip[] = await TripRepository.getTrips();
-  if (!trips) {
-    return res.status(404);
+  const response: Trip[] | ErrorResponse = await TripRepository.getTrips();
+  if (isErrorResponse(response)) {
+    return res.status(response.code).send(response.errorMessage);
   }
-  res.send(trips);
+  return res.send(response);
 };
 
 export const updateTrip = async (req: Request, res: Response) => {
-  const trip: Trip = req.body;
+  const trip: UpdateTripDto = req.body;
   const tripId: string = req.params.tripId;
   const managerId = res.locals.actorId;
-  const validate = Validadtor.compile<Trip>(tripValidator);
+  const validate = Validadtor.compile<UpdateTripDto>(updateTripValidator);
 
   if (!validate(trip)) {
     return res.status(422).send(validate.errors);
   }
 
-  const response: ModifyTripResponse = await TripRepository.upadateTrip(
+  const response: ModifyTripResponse = await TripRepository.updateTrip(
     tripId,
     managerId,
     trip
   );
 
-  res.status(response.statusCode).send(response.message);
+  return res.status(response.statusCode).send(response.message);
 };
 
 export const deleteTrip = async (req: Request, res: Response) => {
@@ -56,7 +60,7 @@ export const deleteTrip = async (req: Request, res: Response) => {
     tripId,
     managerId
   );
-  res.status(response.statusCode).send(response.message);
+  return res.status(response.statusCode).send(response.message);
 };
 
 export const cancelTrip = async (req: Request, res: Response) => {
@@ -66,7 +70,7 @@ export const cancelTrip = async (req: Request, res: Response) => {
     tripId,
     managerId
   );
-  res.status(response.statusCode).send(response.message);
+  return res.status(response.statusCode).send(response.message);
 };
 
 export const createTrip = async (req: Request, res: Response) => {
@@ -78,8 +82,10 @@ export const createTrip = async (req: Request, res: Response) => {
     status: TStatus.Active,
     description: 'Trip created',
   };
-  trip.stages = JSON.parse(req.body.stages);
-  trip.requirements = JSON.parse(req.body.requirements);
+  if (trip.stages == null && trip.requirements == null) {
+    trip.stages = JSON.parse(req.body.stages);
+    trip.requirements = JSON.parse(req.body.requirements);
+  }
   trip.totalPrice = calculateTotalPrice(trip.stages);
   const files = req.files as Express.Multer.File[];
   if (files) {
@@ -106,12 +112,12 @@ export const createTrip = async (req: Request, res: Response) => {
     return res.status(422).send(validate.errors);
   }
 
-  const createdTrip: Trip | null = await TripRepository.createTrip(trip);
-  if (!createdTrip) {
-    return res.send(500).send('Did not manage to create Trip');
+  const response: Trip | ErrorResponse = await TripRepository.createTrip(trip);
+  if (isErrorResponse(response)) {
+    return res.status(response.code).send(response.errorMessage);
   }
 
-  return res.send(createdTrip);
+  return res.send(response);
 };
 
 const calculateTotalPrice = (stages: Stage[]): number => {
@@ -120,11 +126,13 @@ const calculateTotalPrice = (stages: Stage[]): number => {
 
 export const getAppliedTrips = async (req: Request, res: Response) => {
   const actorId = req.params.actorId;
-  const trips: Trip[] | null = await TripRepository.getAppliedTrips(actorId);
-  if (!trips) {
-    return res.status(404).send(`Could not find actor with Id: ${actorId}`);
+  const response: Trip[] | ErrorResponse = await TripRepository.getAppliedTrips(
+    actorId
+  );
+  if (isErrorResponse(response)) {
+    return res.status(response.code).send(response.errorMessage);
   }
-  res.send(sortTripsByApplicationStatus(trips, actorId));
+  return res.send(sortTripsByApplicationStatus(response, actorId));
 };
 
 const getApplication = (trip: Trip, actorId: string): Application => {
@@ -149,24 +157,21 @@ const sortTripsByApplicationStatus = (trips: Trip[], actorId: string) => {
 
 export const getTripsByManager = async (req: Request, res: Response) => {
   const managerId = req.params.managerId;
-  const trips: Trip[] | null = await TripRepository.getTripsByManager(
-    managerId
-  );
-  if (!trips) {
-    return res.status(404).send(`Could not find manager with Id: ${managerId}`);
+  const response: Trip[] | ErrorResponse =
+    await TripRepository.getTripsByManager(managerId);
+  if (isErrorResponse(response)) {
+    return res.status(response.code).send(response.errorMessage);
   }
-  res.send(trips);
+  return res.send(response);
 };
 
 export const getSearchedTrips = async (req: Request, res: Response) => {
   const searchWord = req.params.searchWord;
-  const trips: Trip[] | null = await TripRepository.getSearchedTrips(
-    searchWord
-  );
-  if (!trips) {
-    return res
-      .status(404)
-      .send(`No trips matched the searchword: ${searchWord}`);
+  const response: Trip[] | ErrorResponse =
+    await TripRepository.getSearchedTrips(searchWord);
+
+  if (isErrorResponse(response)) {
+    return res.status(response.code).send(response.errorMessage);
   }
-  res.status(200).send(trips);
+  res.status(200).send(response);
 };

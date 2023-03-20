@@ -5,6 +5,7 @@ import {
   getActor,
   getActors,
   updateActor,
+  changeBannedStatus,
 } from '../controllers/ActorController';
 import { isAuthorized, verifyIdentity } from '../middlewares/AuthMiddleware';
 import { Role } from '../models/Actor';
@@ -18,6 +19,8 @@ export function ActorRoutes(app: Application) {
    *      security:
    *        - bearerAuth: []
    *      summary: Get all actors
+   *      tags:
+   *        - Actors
    *      description: Retrieve a array of all actors. Need a token from an administrator account to be able to do this.
    *      responses:
    *       200:
@@ -55,6 +58,8 @@ export function ActorRoutes(app: Application) {
    * /api/v0/Actors:
    *   post:
    *     summary: Create an Actor.
+   *     tags:
+   *       - Actors
    *     description: Create a new actor which will be set with the role Explorer.
    *     requestBody:
    *      required: true
@@ -80,6 +85,13 @@ export function ActorRoutes(app: Application) {
    *              password:
    *                 type: string
    *                 default: 12345678
+   *     responses:
+   *       200:
+   *         description: Success
+   *       422:
+   *         description: Unprocessable Entity
+   *       400:
+   *         description: Bad Request
    *
    */
   app.route('/api/v0/Actors').post(createActor);
@@ -91,6 +103,8 @@ export function ActorRoutes(app: Application) {
    *     security:
    *        - bearerAuth: []
    *     summary: Create a manager account.
+   *     tags:
+   *       - Actors
    *     description: Create a manager account. Requires a token from an account with the role Adminstrator.
    *     requestBody:
    *      required: true
@@ -132,6 +146,8 @@ export function ActorRoutes(app: Application) {
    *    security:
    *       - bearerAuth: []
    *    summary: Update an actor.
+   *    tags:
+   *      - Actors
    *    description: Update the information for an actor. Requires a token to verify that the actor who wishes to update the information is allowed to do so.
    *    parameters:
    *      - name: actorId
@@ -165,8 +181,17 @@ export function ActorRoutes(app: Application) {
    *   get:
    *    security:
    *       - bearerAuth: []
-   *    summary: Get all actors
-   *    description: Retrieve a an actor based on their actorId. Can only be done by a manager.
+   *    summary: Get an actor.
+   *    tags:
+   *      - Actors
+   *    description: Retrieve a an actor based on their actorId. Can only be done by an administrator.
+   *    parameters:
+   *      - name: actorId
+   *        in: path
+   *        required: true
+   *        description: The id of the actor
+   *        schema:
+   *          type: string
    *    responses:
    *      200:
    *        description: Success
@@ -197,6 +222,8 @@ export function ActorRoutes(app: Application) {
    *    security:
    *       - bearerAuth: []
    *    summary: Delete an actor.
+   *    tags:
+   *      - Actors
    *    description: Delete an actor. Requires a token to verify that the actor who wishes to delete the actor is allowed to do so.
    *    parameters:
    *      - name: actorId
@@ -205,10 +232,49 @@ export function ActorRoutes(app: Application) {
    *        description: The id of the actor
    *        schema:
    *          type: string
+   *    responses:
+   *      200:
+   *        description: Succesful
    */
   app
     .route('/api/v0/Actors/:actorId')
     .get(isAuthorized([Role.Administrator]), getActor)
     .put(verifyIdentity, updateActor)
     .delete(verifyIdentity, deleteActor);
+
+  /**
+   * @swagger
+   * /api/v0/Actors/{actorId}/isBanned:
+   *   put:
+   *     security:
+   *        - bearerAuth: []
+   *     summary: Change ban status of an actor.
+   *     tags:
+   *       - Actors
+   *     description: Change ban status of an actor. Requires a token from a administrator.
+   *     parameters:
+   *      - name: actorId
+   *        in: path
+   *        required: true
+   *        description: The id of the actor
+   *        schema:
+   *          type: string
+   *     requestBody:
+   *        required: true
+   *        content:
+   *          application/json:
+   *            schema:
+   *              type: object
+   *              properties:
+   *                isBanned:
+   *                  type: boolean
+   *                  default: true
+   *     responses:
+   *       200:
+   *         description: Success
+   *
+   */
+  app
+    .route('/api/v0/Actors/:actorId/isBanned')
+    .put(isAuthorized([Role.Administrator]), changeBannedStatus);
 }

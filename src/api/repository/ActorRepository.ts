@@ -1,60 +1,139 @@
 import { Actor } from '../models/Actor';
-import { IActorRepository } from './interfaces/IActorRepository';
 import { ActorModel } from './schemes/ActorScheme';
 import { hash } from 'bcryptjs';
-import { Types } from 'mongoose';
 import dotenv from 'dotenv';
+import {
+  createErrorResponse,
+  ErrorResponse,
+} from '../error_handling/ErrorResponse';
+import { UpdateActorDto } from '../models/dtos/UpdateActorDto';
 dotenv.config();
 
-const createActor = async (actor: Actor): Promise<Actor | null> => {
+const createActor = async (actor: Actor): Promise<Actor | ErrorResponse> => {
   actor.password = await hash(actor.password, 8);
-  const res: Actor = await ActorModel.create(actor);
-  return res;
-};
-
-const getActor = async (actorId: string): Promise<Actor | null> => {
-  if (!Types.ObjectId.isValid(actorId)) {
-    return null;
+  try {
+    const res: Actor = await ActorModel.create(actor);
+    if (!res) {
+      return createErrorResponse('Could not create actor', 500);
+    }
+    return res;
+  } catch (error) {
+    return createErrorResponse(error.message);
   }
-  return await ActorModel.findById(actorId);
 };
 
-const getActors = async (): Promise<Actor[]> => {
-  return await ActorModel.find();
-};
-
-const updateActor = async (actorId: string, actor: Actor): Promise<boolean> => {
-  if (!Types.ObjectId.isValid(actorId)) {
-    return false;
+const getActor = async (actorId: string): Promise<Actor | ErrorResponse> => {
+  try {
+    const actor: Actor | null = await ActorModel.findById(actorId);
+    if (!actor) {
+      return createErrorResponse(
+        `Could not find actor with id: ${actorId}`,
+        404
+      );
+    }
+    return actor;
+  } catch (error) {
+    return createErrorResponse(error.message);
   }
+};
 
-  const doc = await ActorModel.findOne({ _id: actorId });
-  if (!doc) {
-    return false;
+const getActors = async (): Promise<Actor[] | ErrorResponse> => {
+  try {
+    const actors: Actor[] | null = await ActorModel.find();
+    if (!actors) {
+      return createErrorResponse(`Could not find list of actors`, 404);
+    }
+    return actors;
+  } catch (error) {
+    return createErrorResponse(error.message);
   }
-  doc.overwrite(actor);
-  await doc.save();
-  return true;
 };
 
-const deleteActor = async (actorId: string): Promise<boolean> => {
-  if (!Types.ObjectId.isValid(actorId)) {
-    return false;
+const updateActor = async (
+  actorId: string,
+  updateActorDto: UpdateActorDto
+): Promise<boolean | ErrorResponse> => {
+  try {
+    const doc = await ActorModel.findOne({ _id: actorId });
+    if (!doc) {
+      return false;
+    }
+
+    if (updateActorDto.password) {
+      updateActorDto.password = await hash(updateActorDto.password, 8);
+    }
+
+    doc.set(updateActorDto);
+    await doc.save();
+    return true;
+  } catch (error) {
+    return createErrorResponse(error.message);
   }
-
-  const res = await ActorModel.deleteOne({ _id: actorId });
-  return res.deletedCount > 0;
 };
 
-const getUserByEmail = async (email: string): Promise<Actor | null> => {
-  return await ActorModel.findOne({ email: email });
+const deleteActor = async (
+  actorId: string
+): Promise<boolean | ErrorResponse> => {
+  try {
+    const response = await ActorModel.deleteOne({ _id: actorId });
+    if (response.deletedCount <= 0) {
+      return createErrorResponse(
+        `Could not find actor with actorId ${actorId}`,
+        404
+      );
+    }
+    return response.deletedCount > 0;
+  } catch (error) {
+    return createErrorResponse(error.message);
+  }
 };
 
-export const ActorRepository: IActorRepository = {
+const getUserByEmail = async (
+  email: string
+): Promise<Actor | ErrorResponse> => {
+  try {
+    const actor: Actor | null = await ActorModel.findOne({ email: email });
+    if (!actor) {
+      return createErrorResponse(
+        `Could not find actor with email ${email} `,
+        404
+      );
+    }
+    return actor;
+  } catch (error) {
+    return createErrorResponse(error.message);
+  }
+};
+
+const changeBannedStatus = async (
+  actorId: string,
+  isBanned: boolean
+): Promise<boolean | ErrorResponse> => {
+  try {
+    const response: boolean | null = await ActorModel.findOneAndUpdate(
+      { _id: actorId },
+
+      [{ $set: { isBanned: isBanned } }],
+      { new: true }
+    );
+    if (!response) {
+      return createErrorResponse(
+        `Could not find actor with actorId ${actorId}`,
+        404
+      );
+    }
+    return response;
+  } catch (err) {
+    return createErrorResponse(err.message);
+  }
+};
+
+export const ActorRepository  = {
   createActor,
   getActor,
   deleteActor,
   getActors,
   updateActor,
   getUserByEmail,
+  changeBannedStatus,
 };

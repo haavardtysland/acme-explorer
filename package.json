@@ -7,7 +7,9 @@
     "test": "set NODE_ENV=test && mocha -r ts-node/register 'src/test/app.test.ts'",
     "start": "ts-node src/index.ts",
     "dev": "nodemon src/index.ts",
-    "build": "tsc"
+    "build": "tsc",
+    "gatling": "./src/api/gatling/bin/gatling.sh",
+    "gatling-win": "./src/api/gatling/bin/gatling.bat"
   },
   "repository": {
     "type": "git",
@@ -31,6 +33,7 @@
     "chai-http": "^4.3.0",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
+    "date-fns": "^2.29.3",
     "dotenv": "^16.0.3",
     "ejs": "^3.1.8",
     "express": "^4.18.2",
@@ -39,6 +42,7 @@
     "mongodb-memory-server": "^8.11.5",
     "mongoose": "^6.8.4",
     "multer": "^1.4.5-lts.1",
+    "node-cache": "^5.1.2",
     "swagger-jsdoc": "5.0.1",
     "swagger-ui-express": "^4.6.0"
   },
