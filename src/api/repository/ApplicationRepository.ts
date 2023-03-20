@@ -18,7 +18,7 @@ const createApplication = async (
   if (trip === null) {
     return null;
   }
-
+  
   await trip.updateOne(update);
   return application;
 };

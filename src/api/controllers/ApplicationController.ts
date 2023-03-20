@@ -1,4 +1,8 @@
 import { Request, Response } from 'express';
+import {
+  ErrorResponse,
+  isErrorResponse,
+} from '../error_handling/ErrorResponse';
 import { Application } from '../models/Application';
 import { ApplicationStatus, AStatus } from '../models/ApplicationStatus';
 import { Trip } from '../models/Trip';
@@ -25,11 +29,11 @@ export const createApplication = async (req: Request, res: Response) => {
     return res.status(422).send(validate.errors);
   }
 
-  const trip: Trip | null = await TripRepository.getTrip(application.tripId);
-  if (!trip) {
-    return res
-      .send(404)
-      .send('The trip you are trying to apply to does not exist');
+  const trip: Trip | ErrorResponse = await TripRepository.getTrip(
+    application.tripId
+  );
+  if (isErrorResponse(trip)) {
+    return res.status(trip.code).send(trip.errorMessage);
   }
 
   if (!trip.isPublished) {
@@ -47,9 +51,9 @@ export const createApplication = async (req: Request, res: Response) => {
   const createdApplication: Application | null =
     await ApplicationRepository.createApplication(application);
   if (!createApplication) {
-    res.send(500).send('Did not manage to submit application');
+    return res.send(500).send('Did not manage to submit application');
   }
-  res.send(createdApplication);
+  return res.send(createdApplication);
 };
 
 export const getApplicationsByTrip = async (req: Request, res: Response) => {
@@ -57,7 +61,7 @@ export const getApplicationsByTrip = async (req: Request, res: Response) => {
   const applications: Application[] | null =
     await ApplicationRepository.getApplicationsByTrip(tripId);
   if (!applications) {
-    res.status(404);
+    return res.status(404);
   }
   res.send(applications);
 };

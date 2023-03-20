@@ -5,6 +5,10 @@ import { TStatus } from './../models/TripStatus';
 import { ModifyTripResponse } from '../models/dtos/ModifyTripResponse';
 import { TripModel } from './schemes/TripScheme';
 import { UpdateTripDto } from '../models/dtos/UpdateTripDto';
+import {
+  createErrorResponse,
+  ErrorResponse,
+} from '../error_handling/ErrorResponse';
 
 const cancelTrip = async (
   tripId: string,
@@ -42,20 +46,33 @@ const cancelTrip = async (
   };
 };
 
-const createTrip = async (trip: Trip): Promise<Trip | null> => {
-  const res = await TripModel.create(trip);
-  return res;
-};
-
-const getTrip = async (tripId: string): Promise<Trip | null> => {
-  if (!Types.ObjectId.isValid(tripId)) {
-    return null;
+const createTrip = async (trip: Trip): Promise<Trip | ErrorResponse> => {
+  try {
+    const res = await TripModel.create(trip);
+    return res;
+  } catch (error) {
+    return createErrorResponse(error.message);
   }
-  return await TripModel.findById(tripId);
 };
 
-const getTrips = async (): Promise<Trip[]> => {
-  return await TripModel.find();
+const getTrip = async (tripId: string): Promise<Trip | ErrorResponse> => {
+  try {
+    const trip: Trip | null = await TripModel.findById(tripId);
+    if (!trip) {
+      return createErrorResponse(`Could not find trip with id: ${tripId}`, 404);
+    }
+    return trip;
+  } catch (error) {
+    return createErrorResponse(error.message);
+  }
+};
+
+const getTrips = async (): Promise<Trip[] | ErrorResponse> => {
+  try {
+    return await TripModel.find();
+  } catch (error) {
+    return createErrorResponse(error.message);
+  }
 };
 
 const updateTrip = async (
@@ -124,16 +141,17 @@ const deleteTrip = async (
   };
 };
 
-const getAppliedTrips = async (actorId: string): Promise<Trip[] | null> => {
-  if (!Types.ObjectId.isValid(actorId)) {
-    return null;
+const getAppliedTrips = async (
+  actorId: string
+): Promise<Trip[] | ErrorResponse> => {
+  try {
+    const trips = await TripModel.find({
+      'applications.actorId': actorId,
+    });
+    return trips;
+  } catch (error) {
+    return createErrorResponse(error.message);
   }
-
-  const trips = await TripModel.find({
-    'applications.actorId': actorId,
-  });
-
-  return trips;
 };
 
 const canTripBeCancelled = (
@@ -218,27 +236,34 @@ const isTripModifiable = (
   return null;
 };
 
-const getTripsByManager = async (managerId: string): Promise<Trip[] | null> => {
-  if (!Types.ObjectId.isValid(managerId)) {
-    return null;
+const getTripsByManager = async (
+  managerId: string
+): Promise<Trip[] | ErrorResponse> => {
+  try {
+    const trips = await TripModel.find({
+      managerId: managerId,
+    });
+    return trips;
+  } catch (error) {
+    return createErrorResponse(error.message);
   }
-
-  const trips = await TripModel.find({
-    managerId: managerId,
-  });
-
-  return trips;
 };
 
-const getSearchedTrips = async (searchWord: string): Promise<Trip[] | null> => {
-  const response: Trip[] | null = await TripModel.find({
-    $or: [
-      { ticker: new RegExp(searchWord, 'i') },
-      { title: new RegExp(searchWord, 'i') },
-      { description: new RegExp(searchWord, 'i') },
-    ],
-  });
-  return response;
+const getSearchedTrips = async (
+  searchWord: string
+): Promise<Trip[] | ErrorResponse> => {
+  try {
+    const response: Trip[] | null = await TripModel.find({
+      $or: [
+        { ticker: new RegExp(searchWord, 'i') },
+        { title: new RegExp(searchWord, 'i') },
+        { description: new RegExp(searchWord, 'i') },
+      ],
+    });
+    return response;
+  } catch (error) {
+    return createErrorResponse(error.message);
+  }
 };
 
 export const TripRepository = {
