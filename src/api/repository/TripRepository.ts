@@ -2,7 +2,7 @@ import { Types } from 'mongoose';
 import { Trip } from '../models/Trip';
 import { AStatus } from './../models/ApplicationStatus';
 import { TStatus } from './../models/TripStatus';
-import { ModifyTripResponse } from '../models/dtos/TripModels';
+import { ModifyTripResponse } from '../models/dtos/ModifyTripResponse';
 import { TripModel } from './schemes/TripScheme';
 import { UpdateTripDto } from '../models/dtos/UpdateTripDto';
 
