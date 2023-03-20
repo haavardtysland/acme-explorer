@@ -11,7 +11,8 @@ import { Trip } from '../models/Trip';
 import { ActorFinder } from '../models/ActorFinder';
 import { actorFinderValidator } from './validators/ActorValidator';
 import NodeCache from 'node-cache';
-import { json } from 'body-parser';
+import { SystemSettings } from '../models/SystemSettings';
+import { SystemSettingsModel } from '../repository/schemes/SystemSettingsScheme';
 
 const cache = new NodeCache({ stdTTL: 3600, checkperiod: 120 });
 
@@ -73,7 +74,13 @@ export const findTrips = async (req: Request, res: Response) => {
   if (isErrorResponse(response)) {
     return res.status(500).send(response.errorMessage);
   }
-  cache.set(key, JSON.stringify(response));
+
+  const systemSettings: SystemSettings | null =
+    await SystemSettingsModel.findOne({
+      name: 'systemSettings',
+    });
+  const cachingTime = systemSettings?.cachingTime || 3600;
+  cache.set(key, JSON.stringify(response), cachingTime);
   console.log('put data into cache');
   return res.status(200).send(response);
 };

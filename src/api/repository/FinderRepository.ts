@@ -8,12 +8,20 @@ import { Trip } from '../models/Trip';
 import { TripModel } from './schemes/TripScheme';
 import { ActorModel } from './schemes/ActorScheme';
 import { ActorFinder } from '../models/ActorFinder';
+import { SystemSettingsModel } from './schemes/SystemSettingsScheme';
+import { SystemSettings } from '../models/SystemSettings';
 
 const findTrips = async (
   parameters: Finder
 ): Promise<Trip[] | ErrorResponse> => {
   try {
-    const query = TripModel.find().limit(10);
+    const systemSettings: SystemSettings | null =
+      await SystemSettingsModel.findOne({
+        name: 'systemSettings',
+      });
+    const resultLimit = systemSettings?.resultLimit || 10;
+
+    const query = TripModel.find().limit(resultLimit);
     if (parameters.fromPrice) {
       query.where('totalPrice', { $gte: parameters.fromPrice });
     }
