@@ -42,6 +42,7 @@ const findTrips = async (
 
     return await query.exec();
   } catch (error) {
+    console.log('hei catch');
     return createErrorResponse(error.message);
   }
 };
@@ -51,7 +52,7 @@ const updateFinder = async (
   finder: ActorFinder
 ): Promise<ActorFinder | ErrorResponse> => {
   try {
-    const actor = await ActorModel.findByIdAndUpdate(actorId, {
+    await ActorModel.findByIdAndUpdate(actorId, {
       finder: finder,
     });
   } catch (error) {

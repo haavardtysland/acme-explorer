@@ -10,7 +10,7 @@ Students: Ole Løkken, Mathias Myrold, Håvard Tysland
 
 ## Auth
 
-To use endpoints that require a user, or a specific role you need to have a Bearer Token in the AUTHORIZATION header. After you have created an Actor you need to use the Login-route to get an access token. The Actor you create is automatically an Explorer. If you need to get an Actor with a different role you need to adjust this manually in the DB, by for example change the role to "ADMINISTRATOR"
+To use endpoints that require a user, or a specific role you need to have a Bearer Token in the AUTHORIZATION header. After you have created an Actor you need to use the Login-route to get an access token. The Actor you create is automatically an Explorer. If you need to get an Actor with a different role you need to adjust this manually in the DB, by for example change the role to "ADMINISTRATOR". We implemented the authorization process before we knew that the course suggested that we should use Firebase-Auth. We of course see the benefit of it, but stayed with our local implementation. 
 
 ## Documentation with Swagger
 
