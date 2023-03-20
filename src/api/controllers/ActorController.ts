@@ -14,19 +14,21 @@ import Validator from './validators/Validator';
 
 export const getActor = async (req: Request, res: Response) => {
   const actorId: string = req.params.actorId;
-  const actor: Actor | null = await ActorRepository.getActor(actorId);
-  if (!actor) {
-    return res.status(404).send(`Actor with id: ${actorId} could not be found`);
+  const response: Actor | ErrorResponse = await ActorRepository.getActor(
+    actorId
+  );
+  if (isErrorResponse(response)) {
+    return res.status(response.code).send(response.errorMessage);
   }
-  return res.send(actor);
+  return res.send(response);
 };
 
 export const getActors = async (req: Request, res: Response) => {
-  const actors: Actor[] = await ActorRepository.getActors();
-  if (!actors) {
-    return res.status(404);
+  const response: Actor[] | ErrorResponse = await ActorRepository.getActors();
+  if (isErrorResponse(response)) {
+    return res.status(response.code).send(response.errorMessage);
   }
-  return res.send(actors);
+  return res.send(response);
 };
 
 export const updateActor = async (req: Request, res: Response) => {
@@ -39,17 +41,19 @@ export const updateActor = async (req: Request, res: Response) => {
   }
   const response = await ActorRepository.updateActor(actorId, request);
   if (isErrorResponse(response)) {
-    return res.status(500).send(response.errorMessage);
+    return res.status(response.code).send(response.errorMessage);
   }
-  res.send(request);
+  return res.send(request);
 };
 
 export const deleteActor = async (req: Request, res: Response) => {
   const actorId: string = req.params.actorId;
-  const isDeleted: boolean = await ActorRepository.deleteActor(actorId);
+  const response: boolean | ErrorResponse = await ActorRepository.deleteActor(
+    actorId
+  );
 
-  if (!isDeleted) {
-    return res.status(404).send(`Did not find actor with id: ${actorId}`);
+  if (isErrorResponse(response)) {
+    return res.status(response.code).send(response.errorMessage);
   }
   return res.send('Actor successfully deleted');
 };
@@ -75,7 +79,7 @@ export const createActor = async (req: Request, res: Response) => {
     actor
   );
   if (isErrorResponse(response)) {
-    return res.status(400).send(response.errorMessage);
+    return res.status(response.code).send(response.errorMessage);
   }
   return res.send(response);
 };
@@ -93,7 +97,7 @@ export const createManager = async (req: Request, res: Response) => {
     actor
   );
   if (isErrorResponse(response)) {
-    return res.send(400).send(response.errorMessage);
+    return res.send(response.code).send(response.errorMessage);
   }
   return res.send(response);
 };
@@ -104,10 +108,10 @@ export const changeBannedStatus = async (req: Request, res: Response) => {
   if (typeof isBanned != 'boolean') {
     return res.status(422).send('You need to send in a true or false');
   }
-  const response: boolean | null | ErrorResponse =
+  const response: boolean | ErrorResponse =
     await ActorRepository.changeBannedStatus(actorId, isBanned);
   if (isErrorResponse(response)) {
-    return res.send(404).send(response.errorMessage);
+    return res.send(response.code).send(response.errorMessage);
   }
   return res.send(response);
 };

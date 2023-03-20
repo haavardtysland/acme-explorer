@@ -1,10 +1,15 @@
 export type ErrorResponse = {
   errorMessage: string;
+  code: number;
 };
 
-export function createErrorResponse(message: string): ErrorResponse {
+export function createErrorResponse(
+  message: string,
+  code: number = 500
+): ErrorResponse {
   return {
     errorMessage: message,
+    code: code,
   };
 }
 
