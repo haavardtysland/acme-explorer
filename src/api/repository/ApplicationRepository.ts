@@ -1,6 +1,12 @@
 import { Types } from 'mongoose';
+import {
+  createErrorResponse,
+  ErrorResponse,
+} from '../error_handling/ErrorResponse';
 import { Application } from '../models/Application';
 import { ApplicationStatus } from '../models/ApplicationStatus';
+import { Trip } from '../models/Trip';
+import { AStatus } from './../models/ApplicationStatus';
 import { TripModel } from './schemes/TripScheme';
 
 const createApplication = async (
@@ -66,8 +72,62 @@ const updateApplicationStatus = async (
   return applicationStatus;
 };
 
+const payTrip = async (
+  applicationId: string,
+  actorId: string
+): Promise<Application | ErrorResponse> => {
+  try {
+    const applicationFind: Trip | null = await TripModel.findOne(
+      {},
+      { applications: { $elemMatch: { _id: applicationId } } }
+    );
+
+    if (!applicationFind) {
+      return createErrorResponse('No application found.');
+    }
+
+    const application: Application = applicationFind.applications[0];
+
+    if (!application) {
+      return createErrorResponse('No application found.');
+    }
+
+    if (application.actorId != actorId) {
+      return createErrorResponse('Needs to be authorized as the actor ');
+    }
+
+    if (application.status.status != AStatus.Due){
+      return createErrorResponse('ApplicationStatus needs to be DUE');
+    }
+
+    //TODO IMPLEMENT ACTUAL PAYMENT WITH PAYPAL
+
+    await TripModel.findOneAndUpdate(
+      {
+        'applications._id': applicationId,
+      },
+      {
+        $set: {
+          'applications.$.status': {
+            status: AStatus.Accepted,
+            description: 'Payment has been made.',
+          },
+        },
+      }
+    );
+
+    application.status.status = AStatus.Accepted;
+    application.status.description = 'Payment has been made.';
+
+    return application;
+  } catch (error) {
+    return createErrorResponse(error.message);
+  }
+};
+
 export const ApplicationRepository = {
   createApplication,
   getApplicationsByTrip,
   updateApplicationStatus,
+  payTrip,
 };
