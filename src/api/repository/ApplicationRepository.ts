@@ -1,4 +1,5 @@
 import { Types } from 'mongoose';
+import { createErrorResponse } from '../error_handling/ErrorResponse';
 import { Application } from '../models/Application';
 import { ApplicationStatus } from '../models/ApplicationStatus';
 import { TripModel } from './schemes/TripScheme';
@@ -66,8 +67,30 @@ const updateApplicationStatus = async (
   return applicationStatus;
 };
 
+const cancelApplication = async ( applicationId: string, actorId: string, applicationStatus: ApplicationStatus) : Promise< ApplicationStatus | null>  {
+    try {
+      
+      const trip = await TripModel.findOneAndUpdate(
+        {
+          'applications._id': applicationId,
+        },
+        {
+          $set: {
+            'applications.$.status': {
+              status: applicationStatus.status,
+              description: applicationStatus.description,
+            },
+          },
+        }
+      );
+    } catch(error){
+      createErrorResponse(error.message)
+    }
+}
+
 export const ApplicationRepository = {
   createApplication,
   getApplicationsByTrip,
   updateApplicationStatus,
+  cancelApplication
 };

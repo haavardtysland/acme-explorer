@@ -6,7 +6,7 @@ import { ApplicationRepository } from '../repository/ApplicationRepository';
 import { TripRepository } from '../repository/TripRepository';
 import {
   applicationStatusValidator,
-  applicationValidator,
+  applicationValidator
 } from './validators/ApplicationValidator';
 import Validator from './validators/Validator';
 
@@ -94,6 +94,35 @@ export const changeApplicationStatus = async (req: Request, res: Response) => {
 
   return res.status(200).send('Application status was sucessfully updated');
 };
+
+export const cancelApplication = (req: Request, res: Response) {
+  const applicationId: string = req.params.applicationId;
+  const actorId: string = res.locals.actorId;
+  const applicationStatus: ApplicationStatus = req.body;
+  
+  const validate = Validator.compile<ApplicationStatus>(
+    applicationStatusValidator
+  );
+
+  if (!validate(applicationStatus)) {
+    return res.status(422).send(validate.errors);
+  }
+
+  const isAccepted: boolean = applicationStatus.status == AStatus.Due;
+
+  if (!isAccepted) {
+    return res.status(422).send('Status need to be ACCEPTED');
+  }
+
+  const application: ApplicationStatus | null = await ApplicationRepository.cancelApplication(applicationId, actorId, applicationStatus);
+
+  if (!application) {
+    return res
+      .status(404)
+      .send(`Could not find Application with Id: ${applicationId}`);
+  }
+  return res.status(200).send('Application status was sucessfully cancelled');
+}
 
 export const payTrip = (req: Request, res: Response) => {
   res.status(501).send('Payment is not implemented');

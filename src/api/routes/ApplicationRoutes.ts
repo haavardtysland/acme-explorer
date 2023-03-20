@@ -80,6 +80,7 @@ export function ApplicationRoutes(app: Application) {
     .route('/api/v0/Trips/Application/:applicationId/Status')
     .put(isAuthorized([Role.Manager]), changeApplicationStatus);
 
+
   /**
    * @swagger
    * /api/v0/Trips/Applications/:applicationId/Pay:
