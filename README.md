@@ -10,11 +10,22 @@ Students: Ole Løkken, Mathias Myrold, Håvard Tysland
 
 ## Auth
 
-To use endpoints that require a user, or a specific role you need to have a Bearer Token in the AUTHORIZATION header. After you have created an Actor you need to use the Login-route to get an access token. The Actor you create is automatically an Explorer. If you need to get an Actor with a different role you need to adjust this manually in the DB, by for example change the role to "ADMINISTRATOR". We implemented the authorization process before we knew that the course suggested that we should use Firebase-Auth. We of course see the benefit of it, but stayed with our local implementation. 
+To use endpoints that require a user, or a specific role you need to have a Bearer Token in the AUTHORIZATION header. After you have created an Actor you need to use the Login-route to get an access token. The Actor you create is automatically an Explorer. If you need to get an Actor with a different role you need to adjust this manually in the DB, by for example change the role to "ADMINISTRATOR". We implemented the authorization process before we knew that the course suggested that we should use Firebase-Auth. We of course see the benefit of it, but stayed with our local implementation.
 
 ## Documentation with Swagger
 
 All endpoints have been documented can be viewed at `localhost:8080/docs`. After you have recieved a token through the Login-route you can: Copy the token > Press authorize in top of the documentation > Paste token. Now the token will be added to all your requests.
+<img src="./assets/tokenInput.png" width="600">
+
+## Saving pictures to trips
+
+When implementing how to add pictures to trips we used the content type from-data. We have not figured out how to post a trip with form-data in swagger, but if you want to test it, it is possible on postman like this:
+<img src="./assets/postTripsFromData.png" width="600">
+Here the stages have to be sumbitted like fro example this:
+
+[{"title": "Walking the streets","description": "A guide will be following the group around the city","price": 99}].
+
+Also the content types of stages and requirements have to be changes to "application/json".
 
 ## Model
 
