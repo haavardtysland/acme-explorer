@@ -13,6 +13,7 @@ export interface IActorRepository {
   deleteActor: (actorId: string) => Promise<boolean>;
   getUserByEmail: (email: string) => Promise<Actor | null>;
   changeBannedStatus: (
-    actorId: string
+    actorId: string,
+    isbanned: boolean
   ) => Promise<boolean | null | ErrorResponse>;
 }

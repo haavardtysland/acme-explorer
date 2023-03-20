@@ -100,8 +100,12 @@ export const createManager = async (req: Request, res: Response) => {
 
 export const changeBannedStatus = async (req: Request, res: Response) => {
   const actorId: string = req.params.actorId;
+  const isBanned = req.body.isBanned;
+  if (typeof isBanned != 'boolean') {
+    return res.status(422).send('You need to send in a true or false');
+  }
   const response: boolean | null | ErrorResponse =
-    await ActorRepository.changeBannedStatus(actorId);
+    await ActorRepository.changeBannedStatus(actorId, isBanned);
   if (isErrorResponse(response)) {
     return res.send(404).send(response.errorMessage);
   }
