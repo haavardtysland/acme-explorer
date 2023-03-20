@@ -68,13 +68,14 @@ const getUserByEmail = async (email: string): Promise<Actor | null> => {
 };
 
 const changeBannedStatus = async (
-  actorId: string
+  actorId: string,
+  isBanned: boolean
 ): Promise<boolean | null | ErrorResponse> => {
   try {
     return await ActorModel.findOneAndUpdate(
       { _id: actorId },
 
-      [{ $set: { isBanned: { $eq: [false, '$isBanned'] } } }],
+      [{ $set: { isBanned: isBanned } }],
       { new: true }
     );
   } catch (err) {
