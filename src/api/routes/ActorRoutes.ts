@@ -7,7 +7,11 @@ import {
   updateActor,
   changeBannedStatus,
 } from '../controllers/ActorController';
-import { isAuthorized, verifyIdentity } from '../middlewares/AuthMiddleware';
+import {
+  getUserInfo,
+  isAuthorized,
+  verifyIdentity,
+} from '../middlewares/AuthMiddleware';
 import { Role } from '../models/Actor';
 import { createManager } from './../controllers/ActorController';
 
@@ -238,7 +242,7 @@ export function ActorRoutes(app: Application) {
    */
   app
     .route('/api/v0/Actors/:actorId')
-    .get(isAuthorized([Role.Administrator]), getActor)
+    .get(getUserInfo, getActor)
     .put(verifyIdentity, updateActor)
     .delete(verifyIdentity, deleteActor);
 
