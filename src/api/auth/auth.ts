@@ -5,6 +5,7 @@ export type LoginResponse = {
   token?: string;
   id?: string;
   errorMsg?: string;
+  actor?: Actor; 
 };
 
 export type LoginRequest = {

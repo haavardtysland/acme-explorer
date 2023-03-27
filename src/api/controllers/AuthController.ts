@@ -50,6 +50,7 @@ export const login = async (req: Request, res: Response) => {
   const response: LoginResponse = {
     id: actor._id,
     token: createAcesstoken(actor),
+    actor: actor,
   };
   return res.status(200).send(response);
 };
