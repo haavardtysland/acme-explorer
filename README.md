@@ -57,3 +57,5 @@ In the picture under we can see form the galting report that the global response
 
 The corresponding screen capture of the gatling report:
 <img src="./assets/gatlinReport10501050.png">
+
+Adding line in readme
