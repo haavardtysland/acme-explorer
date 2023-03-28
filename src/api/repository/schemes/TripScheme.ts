@@ -43,7 +43,7 @@ const TripSchema = new mongoose.Schema({
         description: { type: String, required: true },
       },
       comments: { type: [], required: false },
-      actorId: { type: Schema.Types.ObjectId, required: true },
+      explorerId: { type: Schema.Types.ObjectId, required: true },
       tripId: { type: Schema.Types.ObjectId, required: true },
     },
   ],

@@ -115,7 +115,7 @@ const cancelApplication = async (
       );
     }
 
-    if (application.actorId != actorId) {
+    if (application.explorerId != actorId) {
       return createErrorResponse('Needs to be authorized as the actor ');
     }
 
@@ -161,7 +161,7 @@ const payTrip = async (
       return createErrorResponse('No application found.');
     }
 
-    if (application.actorId != actorId) {
+    if (application.explorerId != actorId) {
       return createErrorResponse('Needs to be authorized as the actor ');
     }
 

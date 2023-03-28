@@ -26,12 +26,12 @@ export const applicationValidator: JSONSchemaType<Application> = {
   type: 'object',
   properties: {
     _id: { type: 'string' },
-    actorId: { type: 'string' },
+    explorerId: { type: 'string' },
     comments: { type: 'array', items: { type: 'string' } },
     status: applicationStatusValidator,
     dateCreated: { type: 'string', format: 'date' },
     tripId: { type: 'string' },
   },
-  required: ['actorId', 'status', 'dateCreated', 'tripId'],
+  required: ['explorerId', 'status', 'dateCreated', 'tripId'],
   additionalProperties: false,
 };

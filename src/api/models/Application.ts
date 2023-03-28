@@ -5,6 +5,6 @@ export type Application = {
   dateCreated: string | Date;
   status: ApplicationStatus;
   comments: string[];
-  actorId: string;
+  explorerId: string;
   tripId: string;
 };

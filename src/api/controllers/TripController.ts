@@ -139,7 +139,7 @@ export const getAppliedTrips = async (req: Request, res: Response) => {
 const getApplication = (trip: Trip, actorId: string): Application => {
   //snekker
   const application: Application | undefined = trip.applications.find(
-    (app) => app.actorId == actorId
+    (app) => app.explorerId == actorId
   );
   if (!application) {
     return {} as Application;
