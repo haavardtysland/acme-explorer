@@ -153,7 +153,7 @@ const getAppliedTrips = async (
 ): Promise<Trip[] | ErrorResponse> => {
   try {
     const trips = await TripModel.find({
-      'applications.actorId': actorId,
+      'applications.explorerId': actorId,
     });
     return trips;
   } catch (error) {

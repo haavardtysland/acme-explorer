@@ -133,22 +133,19 @@ export const getAppliedTrips = async (req: Request, res: Response) => {
   if (isErrorResponse(response)) {
     return res.status(response.code).send(response.errorMessage);
   }
-  return res.send(response);
+  return res.send(sortTripsByApplicationStatus(response, actorId));
 };
 
 const getApplication = (trip: Trip, actorId: string): Application => {
   //snekker
-  console.log(trip.applications);
-  const application: Application[] | undefined = trip.applications.filter(
-    (app) => {
-      return app.explorerId.toString() == actorId;
-    }
+  const application: Application | undefined = trip.applications.find(
+    (app) => app.explorerId.toString() == actorId
   );
 
   if (!application) {
     return {} as Application;
   }
-  return application[0];
+  return application;
 };
 
 const sortTripsByApplicationStatus = (trips: Trip[], actorId: string) => {
