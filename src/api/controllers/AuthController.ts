@@ -86,5 +86,6 @@ export const useRefreshToken = async (req: Request, res: Response) => {
   return res.send({
     ok: true,
     accessToken: createAcesstoken(actor),
+    actor: actor,
   });
 };
