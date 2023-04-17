@@ -23,7 +23,7 @@ app.set('view engine', 'ejs');
 app.use(cookieParser());
 app.use(
   cors({
-    origin: '*',
+    origin: 'https://acme.exigo.dev',
   })
 );
 
