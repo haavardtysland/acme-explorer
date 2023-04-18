@@ -96,6 +96,9 @@ export const useRefreshToken = async (req: Request, res: Response) => {
 };
 
 export const logout = (req: Request, res: Response) => {
-  res.clearCookie('rt');
+  res.clearCookie('rt', {
+    sameSite: 'none',
+    secure: true,
+  });
   res.status(200).send({ message: 'refresh-token should be removed' });
 };
