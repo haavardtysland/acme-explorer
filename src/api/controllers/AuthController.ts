@@ -56,14 +56,12 @@ export const login = async (req: Request, res: Response) => {
   res.cookie('rt', createRefreshToken(actor._id), {
     sameSite: 'none',
     secure: true,
-    httpOnly: true,
   });
   return res.status(200).send(response);
 };
 
 export const useRefreshToken = async (req: Request, res: Response) => {
   const token = req.cookies.rt;
-  console.log('faen');
   if (!token) {
     return res.send({ ok: false, accessToken: '' });
   }
@@ -86,7 +84,6 @@ export const useRefreshToken = async (req: Request, res: Response) => {
   }
 
   res.cookie('rt', createRefreshToken(actor._id), {
-    httpOnly: true,
     sameSite: 'none',
     secure: true,
   });
