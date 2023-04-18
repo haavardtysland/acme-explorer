@@ -56,6 +56,7 @@ export const login = async (req: Request, res: Response) => {
   res.cookie('rt', createRefreshToken(actor._id), {
     sameSite: 'none',
     secure: true,
+    domain: 'localhost, acme.exigo.dev',
   });
   return res.status(200).send(response);
 };
@@ -86,6 +87,7 @@ export const useRefreshToken = async (req: Request, res: Response) => {
   res.cookie('rt', createRefreshToken(actor._id), {
     sameSite: 'none',
     secure: true,
+    domain: 'localhost, acme.exigo.dev',
   });
 
   return res.send({
