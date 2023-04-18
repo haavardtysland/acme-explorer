@@ -67,9 +67,9 @@ export const useRefreshToken = async (req: Request, res: Response) => {
   if (!token) {
     return res.send({ ok: false, accessToken: '' });
   }
-
+  console.log(token);
   const payload: RefreshTokenPayload | null = verifyRefreshToken(token);
-
+  console.log(payload);
   if (!payload) {
     return res.status(401).send('User is not authenticated.');
   }
