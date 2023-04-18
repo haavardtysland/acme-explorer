@@ -20,13 +20,14 @@ const port = process.env.PORT || 8080;
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.set('view engine', 'ejs');
-app.use(cookieParser());
 app.use(
   cors({
     origin: 'http://localhost:4200',
-    credentials: true
+    credentials: true,
   })
 );
+
+app.use(cookieParser());
 
 AuthRoutes(app);
 ActorRoutes(app);

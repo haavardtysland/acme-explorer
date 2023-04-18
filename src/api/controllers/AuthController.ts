@@ -7,6 +7,7 @@ import {
   LoginResponse,
   RefreshTokenPayload,
   verifyAcessToken,
+  verifyRefreshToken,
 } from '../auth/auth';
 import {
   ErrorResponse,
@@ -67,7 +68,7 @@ export const useRefreshToken = async (req: Request, res: Response) => {
     return res.send({ ok: false, accessToken: '' });
   }
 
-  const payload: RefreshTokenPayload | null = verifyAcessToken(token);
+  const payload: RefreshTokenPayload | null = verifyRefreshToken(token);
 
   if (!payload) {
     return res.status(401).send('User is not authenticated.');
