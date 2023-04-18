@@ -1,5 +1,5 @@
 import { Application } from 'express';
-import { login, useRefreshToken } from '../controllers/AuthController';
+import { login, logout, useRefreshToken } from '../controllers/AuthController';
 
 export function AuthRoutes(app: Application) {
   /**
@@ -63,4 +63,5 @@ export function AuthRoutes(app: Application) {
    *
    */
   app.route('/api/v0/refresh-token').post(useRefreshToken);
+  app.route('/api/v0/logout').post(logout);
 }

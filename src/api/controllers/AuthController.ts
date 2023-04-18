@@ -56,7 +56,6 @@ export const login = async (req: Request, res: Response) => {
   res.cookie('rt', createRefreshToken(actor._id), {
     sameSite: 'none',
     secure: true,
-    domain: 'localhost, acme.exigo.dev',
   });
   return res.status(200).send(response);
 };
@@ -87,7 +86,6 @@ export const useRefreshToken = async (req: Request, res: Response) => {
   res.cookie('rt', createRefreshToken(actor._id), {
     sameSite: 'none',
     secure: true,
-    domain: 'localhost, acme.exigo.dev',
   });
 
   return res.send({
@@ -95,4 +93,9 @@ export const useRefreshToken = async (req: Request, res: Response) => {
     accessToken: createAcesstoken(actor),
     actor: actor,
   });
+};
+
+export const logout = (req: Request, res: Response) => {
+  res.clearCookie('rt');
+  res.status(200).send({ message: 'refresh-token should be removed' });
 };
