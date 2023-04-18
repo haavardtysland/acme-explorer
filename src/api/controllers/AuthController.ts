@@ -84,8 +84,8 @@ export const useRefreshToken = async (req: Request, res: Response) => {
   }
 
   res.cookie('rt', createRefreshToken(actor._id), {
-    httpOnly: true,
-    path: 'refresh-token',
+    sameSite: 'none',
+    secure: true,
   });
 
   return res.send({
