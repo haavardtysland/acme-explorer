@@ -53,7 +53,10 @@ export const login = async (req: Request, res: Response) => {
     actor: actor,
   };
   res.header('Access-Control-Allow-Credentials', 'true');
-  res.cookie('rt', createRefreshToken(actor._id));
+  res.cookie('rt', createRefreshToken(actor._id), {
+    sameSite: 'none',
+    secure: true,
+  });
   return res.status(200).send(response);
 };
 
