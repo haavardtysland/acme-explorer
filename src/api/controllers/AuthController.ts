@@ -52,6 +52,7 @@ export const login = async (req: Request, res: Response) => {
     token: createAcesstoken(actor),
     actor: actor,
   };
+  res.header('Access-Control-Allow-Credentials', 'true');
   res.cookie('rt', createRefreshToken(actor._id));
   return res.status(200).send(response);
 };
