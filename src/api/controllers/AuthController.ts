@@ -70,7 +70,7 @@ export const useRefreshToken = async (req: Request, res: Response) => {
   const payload: RefreshTokenPayload | null = verifyAcessToken(token);
 
   if (!payload) {
-    return res.send(401).send('User is not authenticated.');
+    return res.status(401).send('User is not authenticated.');
   }
 
   const actor: Actor | null | ErrorResponse = await ActorRepository.getActor(
