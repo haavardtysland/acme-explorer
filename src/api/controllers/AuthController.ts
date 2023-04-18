@@ -6,7 +6,6 @@ import {
   LoginRequest,
   LoginResponse,
   RefreshTokenPayload,
-  verifyAcessToken,
   verifyRefreshToken,
 } from '../auth/auth';
 import {
@@ -64,6 +63,7 @@ export const login = async (req: Request, res: Response) => {
 
 export const useRefreshToken = async (req: Request, res: Response) => {
   const token = req.cookies.rt;
+  console.log('faen');
   if (!token) {
     return res.send({ ok: false, accessToken: '' });
   }

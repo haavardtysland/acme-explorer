@@ -5,7 +5,7 @@ export type LoginResponse = {
   token?: string;
   id?: string;
   errorMsg?: string;
-  actor?: Actor; 
+  actor?: Actor;
 };
 
 export type LoginRequest = {
@@ -51,7 +51,6 @@ export const verifyRefreshToken = (
   token: string
 ): RefreshTokenPayload | null => {
   try {
-    token = token.split(' ')[1];
     return verify(token, process.env.REFRESH_TOKEN_SECRET);
   } catch {
     return null;
