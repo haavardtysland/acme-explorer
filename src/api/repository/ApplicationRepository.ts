@@ -146,10 +146,9 @@ const payTrip = async (
   actorId: string
 ): Promise<Application | ErrorResponse> => {
   try {
-    const applicationFind: Trip | null = await TripModel.findOne(
-      {},
-      { applications: { $elemMatch: { _id: applicationId } } }
-    );
+    const applicationFind: Trip | null = await TripModel.findOne({
+      'applications._id': '643ecdabb74f0d3eececddbf',
+    });
 
     if (!applicationFind) {
       return createErrorResponse('No application found.');
