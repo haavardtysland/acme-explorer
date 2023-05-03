@@ -94,10 +94,9 @@ const cancelApplication = async (
   applicationStatus: ApplicationStatus
 ): Promise<ApplicationStatus | ErrorResponse> => {
   try {
-    const applicationFind: Trip | null = await TripModel.findOne(
-      {},
-      { applications: { $elemMatch: { _id: applicationId } } }
-    );
+    const applicationFind: Trip | null = await TripModel.findOne({
+      'applications._id': applicationId,
+    });
 
     if (!applicationFind) {
       return createErrorResponse('No application found.');
@@ -147,7 +146,7 @@ const payTrip = async (
 ): Promise<Application | ErrorResponse> => {
   try {
     const applicationFind: Trip | null = await TripModel.findOne({
-      'applications._id': '643ecdabb74f0d3eececddbf',
+      'applications._id': applicationId,
     });
 
     if (!applicationFind) {
