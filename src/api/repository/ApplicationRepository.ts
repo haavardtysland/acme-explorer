@@ -108,14 +108,24 @@ const cancelApplication = async (
       return createErrorResponse('No application found.');
     }
 
-    if (application.status.status != AStatus.Accepted) {
+    const aStatus: AStatus = application.status.status;
+
+    if (aStatus !== AStatus.Due) {
       return createErrorResponse(
-        'Cannot cancelled application where status is not ACCEPTED'
+        'Cannot cancel application where status is not DUE or PENDING'
+      );
+    }
+
+    if (application.status.status !== AStatus.Pending) {
+      return createErrorResponse(
+        'Cannot cancel application where status is not DUE or PENDING'
       );
     }
 
     if (application.explorerId != actorId) {
-      return createErrorResponse('Needs to be authorized as the actor ');
+      return createErrorResponse(
+        'Needs to be authorized as the actor that made the application'
+      );
     }
 
     const trip = await TripModel.findOneAndUpdate(
