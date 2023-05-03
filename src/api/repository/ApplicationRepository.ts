@@ -110,13 +110,13 @@ const cancelApplication = async (
 
     const aStatus: AStatus = application.status.status;
 
-    if (aStatus !== AStatus.Due) {
+    if (aStatus != AStatus.Due) {
       return createErrorResponse(
         'Cannot cancel application where status is not DUE or PENDING'
       );
     }
 
-    if (application.status.status !== AStatus.Pending) {
+    if (application.status.status != AStatus.Pending) {
       return createErrorResponse(
         'Cannot cancel application where status is not DUE or PENDING'
       );
