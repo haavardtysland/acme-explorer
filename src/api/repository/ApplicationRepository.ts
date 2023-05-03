@@ -111,13 +111,8 @@ const cancelApplication = async (
 
     const aStatus: AStatus = application.status.status;
 
-    if (aStatus != AStatus.Due) {
-      return createErrorResponse(
-        'Cannot cancel application where status is not DUE or PENDING'
-      );
-    }
-
-    if (application.status.status != AStatus.Pending) {
+     
+    if (aStatus != AStatus.Due && aStatus != AStatus.Pending) {
       return createErrorResponse(
         'Cannot cancel application where status is not DUE or PENDING'
       );
@@ -166,6 +161,8 @@ const payTrip = async (
 
     const application: Application | undefined =
       applicationFind.applications.find((a) => a._id == applicationId);
+
+    console.log(application);
 
     if (!application) {
       return createErrorResponse('No application found.');
