@@ -55,7 +55,7 @@ export const tripValidator: JSONSchemaType<Trip> = {
     ticker: { type: 'string' },
     title: { type: 'string' },
     description: { type: 'string' },
-    totalPrice: { type: 'integer' },
+    totalPrice: { type: 'number' },
     startDate: { type: 'string', format: 'date' },
     endDate: { type: 'string', format: 'date' },
     isPublished: { type: 'boolean' },
@@ -77,7 +77,6 @@ export const tripValidator: JSONSchemaType<Trip> = {
     'status',
     'requirements',
   ],
-
   additionalProperties: false,
 };
 
@@ -95,4 +94,4 @@ export const updateTripValidator: JSONSchemaType<UpdateTripDto> = {
   },
   required: [],
   additionalProperties: false,
-}
+};
