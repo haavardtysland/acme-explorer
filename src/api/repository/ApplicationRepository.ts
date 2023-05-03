@@ -102,7 +102,8 @@ const cancelApplication = async (
       return createErrorResponse('No application found.');
     }
 
-    const application: Application = applicationFind.applications[0];
+    const application: Application | undefined =
+      applicationFind.applications.find((a) => a._id == applicationId);
 
     if (!application) {
       return createErrorResponse('No application found.');
@@ -163,7 +164,8 @@ const payTrip = async (
       return createErrorResponse('No application found.');
     }
 
-    const application: Application = applicationFind.applications[0];
+    const application: Application | undefined =
+      applicationFind.applications.find((a) => a._id == applicationId);
 
     if (!application) {
       return createErrorResponse('No application found.');
