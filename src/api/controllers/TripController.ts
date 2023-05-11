@@ -77,7 +77,7 @@ export const createTrip = async (req: Request, res: Response) => {
   const trip: Trip = req.body;
   trip.ticker = Ticker.newTicker();
   trip.managerId = res.locals.actorId;
-  trip.isPublished = true;
+  trip.isPublished = false;
   trip.applications = [];
   trip.status = {
     status: TStatus.Active,

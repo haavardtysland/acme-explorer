@@ -233,13 +233,6 @@ const isTripModifiable = (
     };
   }
 
-  if (trip.isPublished) {
-    return {
-      isModified: false,
-      message: 'You cannot modify a trip that has been published',
-      statusCode: 405,
-    };
-  }
   return null;
 };
 
