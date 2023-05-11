@@ -10,16 +10,20 @@ import { ActorModel } from './schemes/ActorScheme';
 import { ActorFinder } from '../models/ActorFinder';
 import { SystemSettingsModel } from './schemes/SystemSettingsScheme';
 import { SystemSettings } from '../models/SystemSettings';
+import { Actor } from '../models/Actor';
 
 const findTrips = async (
-  parameters: Finder
+  parameters: Finder,
+  actorId: string
 ): Promise<Trip[] | ErrorResponse> => {
   try {
-    const systemSettings: SystemSettings | null =
+    /*const systemSettings: SystemSettings | null =
       await SystemSettingsModel.findOne({
         name: 'systemSettings',
-      });
-    const resultLimit = systemSettings?.resultLimit || 10;
+      });*/
+    const actor: Actor | null = await ActorModel.findById(actorId);
+    
+    const resultLimit = actor?.numTripsFromFinder || 10;
 
     const query = TripModel.find().limit(resultLimit);
     if (parameters.fromPrice) {

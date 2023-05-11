@@ -36,14 +36,14 @@ export const updateFinder = async (req: Request, res: Response) => {
 };
 
 export const findTrips = async (req: Request, res: Response) => {
-  const key = req.originalUrl;
+  /**const key = req.originalUrl;
   if (cache.has(key)) {
     console.log('got data from cache');
     const jsonString: string | undefined = cache.get(key);
     if (jsonString) {
       return res.status(200).send(JSON.parse(jsonString));
     }
-  }
+  }*/
   //Searcher
   const request = {
     keyWord: req.query.keyWord,
@@ -68,19 +68,20 @@ export const findTrips = async (req: Request, res: Response) => {
   };
 
   const response: Trip[] | ErrorResponse = await FinderRepository.findTrips(
-    finderParameters
+    finderParameters,
+    res.locals.actorId
   );
 
   if (isErrorResponse(response)) {
     return res.status(500).send(response.errorMessage);
   }
 
-  const systemSettings: SystemSettings | null =
+  /**const systemSettings: SystemSettings | null =
     await SystemSettingsModel.findOne({
       name: 'systemSettings',
     });
   const cachingTime = systemSettings?.cachingTime || 3600;
   cache.set(key, JSON.stringify(response), cachingTime);
-  console.log('put data into cache');
+  console.log('put data into cache');*/
   return res.status(200).send(response);
 };
