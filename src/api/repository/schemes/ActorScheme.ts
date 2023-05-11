@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { Actor } from '../../models/Actor';
 
-const ActorSchema = new mongoose.Schema({
+const ActorSchema = new mongoose.Schema<Actor>({
   name: { type: String, required: true },
   surname: { type: String, required: true },
   email: { type: String, required: true, unique: true },
@@ -10,6 +10,8 @@ const ActorSchema = new mongoose.Schema({
     required: true,
     enum: ['ADMINISTRATOR', 'MANAGER', 'EXPLORER'],
   },
+  cacheDuration: { type: Number, required: true, min: 1, max: 24 },
+  numTripsFromFinder: { type: Number, required: true, min: 1, max: 100 },
   password: { type: String, required: true },
   phone: { type: String, required: false },
   address: { type: String, required: false },

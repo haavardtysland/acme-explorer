@@ -4,5 +4,7 @@ export type UpdateActorDto = {
   email: string;
   phone?: string;
   address?: string;
-  password: string; 
-}
+  password: string;
+  cacheDuration: number;
+  numTripsFromFinder: number;
+};

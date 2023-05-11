@@ -62,6 +62,8 @@ export const createActor = async (req: Request, res: Response) => {
   const actor: Actor = req.body;
   actor.role = Role.Explorer;
   actor.isBanned = false;
+  actor.numTripsFromFinder = 10;
+  actor.cacheDuration = 1;
   actor.finder = {
     keyWord: null,
     fromPrice: null,

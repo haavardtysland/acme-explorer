@@ -24,6 +24,8 @@ export const actorValidator: JSONSchemaType<Actor> = {
     phone: { type: 'string', nullable: true },
     address: { type: 'string', nullable: true },
     isBanned: { type: 'boolean' },
+    numTripsFromFinder: { type: 'number' },
+    cacheDuration: { type: 'number' },
     role: {
       type: ['string'],
       enum: ['ADMINISTRATOR', 'MANAGER', 'EXPLORER'] as Role[],
@@ -44,6 +46,8 @@ export const updateActorValidator: JSONSchemaType<UpdateActorDto> = {
     phone: { type: 'string', nullable: true },
     address: { type: 'string', nullable: true },
     password: { type: 'string' },
+    numTripsFromFinder: { type: 'number' },
+    cacheDuration: { type: 'number' },
   },
   required: [],
   additionalProperties: false,

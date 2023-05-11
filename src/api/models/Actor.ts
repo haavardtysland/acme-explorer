@@ -17,4 +17,6 @@ export type Actor = {
   password: string;
   isBanned: boolean;
   finder: ActorFinder;
+  cacheDuration: number; 
+  numTripsFromFinder: number; 
 };
