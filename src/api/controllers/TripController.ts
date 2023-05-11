@@ -66,9 +66,12 @@ export const deleteTrip = async (req: Request, res: Response) => {
 export const cancelTrip = async (req: Request, res: Response) => {
   const tripId: string = req.params.tripId;
   const managerId: string = res.locals.actorId;
+  const body = req.body;
+  const description: string = body.description;
   const response: ModifyTripResponse = await TripRepository.cancelTrip(
     tripId,
-    managerId
+    managerId,
+    description
   );
   return res.status(response.statusCode).send(response.message);
 };

@@ -14,7 +14,8 @@ import { type } from 'os';
 
 const cancelTrip = async (
   tripId: string,
-  managerId: string
+  managerId: string,
+  description: string
 ): Promise<ModifyTripResponse> => {
   if (!Types.ObjectId.isValid(tripId)) {
     return {
@@ -44,7 +45,7 @@ const cancelTrip = async (
   }
 
   doc.set({
-    status: { status: TStatus.Cancelled, description: 'Trip is cancelled' },
+    status: { status: TStatus.Cancelled, description: description },
   });
 
   await doc.save();
