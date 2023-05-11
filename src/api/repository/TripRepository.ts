@@ -9,6 +9,8 @@ import { Trip } from '../models/Trip';
 import { AStatus } from './../models/ApplicationStatus';
 import { TStatus } from './../models/TripStatus';
 import { TripModel } from './schemes/TripScheme';
+import { tr } from 'date-fns/locale';
+import { type } from 'os';
 
 const cancelTrip = async (
   tripId: string,
@@ -233,7 +235,42 @@ const isTripModifiable = (
     };
   }
 
+  //7 dager til den starter eller mindre
+  const timeDiff = getTimeDiff(trip);
+  const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+  if (daysDiff >= 0 && daysDiff <= 7) {
+    return {
+      isModified: false,
+      message: 'Its less than 7 days until the trip starts',
+      statusCode: 405,
+    };
+  }
+
+  //At tripén inneholder en applikasjon som er accepted
+  const acceptedTrips = trip.applications.filter((app) => {
+    return app.status.status == AStatus.Accepted;
+  });
+  if (acceptedTrips.length > 0) {
+    return {
+      isModified: false,
+      message: 'The trip has applications that have been payed',
+      statusCode: 405,
+    };
+  }
+
   return null;
+};
+
+const getTimeDiff = (trip: Trip) => {
+  const startDate: Date | string = trip.startDate;
+  let timeDiff = 0;
+  if (startDate instanceof Date) {
+    timeDiff = startDate.getTime() - new Date().getTime();
+  } else {
+    const date = new Date(startDate);
+    timeDiff = date.getTime() - new Date().getTime();
+  }
+  return timeDiff;
 };
 
 const getTripsByManager = async (
