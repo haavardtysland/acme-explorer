@@ -9,8 +9,6 @@ import { Trip } from '../models/Trip';
 import { AStatus } from './../models/ApplicationStatus';
 import { TStatus } from './../models/TripStatus';
 import { TripModel } from './schemes/TripScheme';
-import { tr } from 'date-fns/locale';
-import { type } from 'os';
 
 const cancelTrip = async (
   tripId: string,
@@ -110,6 +108,18 @@ const updateTrip = async (
     };
   }
 
+  //7 dager til den starter eller mindre
+  const timeDiff = getTimeDiff(doc);
+  const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+  if (daysDiff >= 0 && daysDiff <= 10) {
+    return {
+      isModified: false,
+      message:
+        'You cannot cancel a trip where its less than 10 days until the trip starts',
+      statusCode: 405,
+    };
+  }
+
   doc.set(trip);
   await doc.save();
   return {
@@ -186,31 +196,30 @@ const canTripBeCancelled = (
   }
   const today: Date = new Date();
 
-  if (trip.startDate <= today) {
+  //7 dager til den starter eller mindre
+  const timeDiff = getTimeDiff(trip);
+  const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+  if (daysDiff >= 0 && daysDiff <= 7) {
     return {
       isModified: false,
-      message: 'You cannot cancel the trip as it has already started',
-      statusCode: 403,
+      message:
+        'You cannot cancel a trip where its less than 7 days until the trip starts',
+      statusCode: 405,
     };
   }
 
-  if (!trip.isPublished) {
-    return {
-      isModified: false,
-      message: 'You can only cancel the trip if it has been published',
-      statusCode: 403,
-    };
-  }
-
-  trip.applications.forEach((application) => {
-    if (application.status.status === AStatus.Accepted) {
-      return {
-        isModified: false,
-        message: 'You cannot cancel a trip which has any accepted applications',
-        statusCode: 403,
-      };
-    }
+  //At tripén inneholder en applikasjon som er accepted
+  const acceptedTrips = trip.applications.filter((app) => {
+    return app.status.status == AStatus.Accepted;
   });
+  if (acceptedTrips.length > 0) {
+    return {
+      isModified: false,
+      message:
+        'Cannot canel a trip that have applications that have been payed',
+      statusCode: 405,
+    };
+  }
 
   return null;
 };
@@ -233,29 +242,6 @@ const isTripModifiable = (
       isModified: false,
       message: 'You have to be the manager for this trip to modify it',
       statusCode: 403,
-    };
-  }
-
-  //7 dager til den starter eller mindre
-  const timeDiff = getTimeDiff(trip);
-  const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
-  if (daysDiff >= 0 && daysDiff <= 7) {
-    return {
-      isModified: false,
-      message: 'Its less than 7 days until the trip starts',
-      statusCode: 405,
-    };
-  }
-
-  //At tripén inneholder en applikasjon som er accepted
-  const acceptedTrips = trip.applications.filter((app) => {
-    return app.status.status == AStatus.Accepted;
-  });
-  if (acceptedTrips.length > 0) {
-    return {
-      isModified: false,
-      message: 'The trip has applications that have been payed',
-      statusCode: 405,
     };
   }
 
